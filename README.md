@@ -1,6 +1,6 @@
-# Next Starter
+# ProofCard
 
-A minimal Next.js starter using the App Router and TypeScript.
+ProofCard turns real customer feedback into polished, branded social proof.
 
 ## Getting started
 
