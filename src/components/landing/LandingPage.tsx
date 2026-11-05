@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
@@ -46,6 +46,10 @@ const loopSteps = [
   { title: "Collect the good stuff", copy: "A focused form that makes honest feedback easy." },
   { title: "Share it proudly", copy: "Approve the words you love, then make them yours." },
 ] as const;
+
+const LOOP_DURATION = 6000;
+const LOOP_SLUG = "moonwell";
+const LOOP_QUOTE = "The kind of care you feel the difference in.";
 
 const studioReviews = [
   { name: "Ayo, founder", text: "The work speaks for itself now.", status: "Approved", tone: "sage" },
@@ -136,7 +140,7 @@ function HeroStack({ paused }: { paused: boolean }) {
   </div>;
 }
 
-function LoopDemo({ step, paused }: { step: number; paused: boolean }) {
+function LegacyLoopDemo({ step, paused }: { step: number; paused: boolean }) {
   const [copied, setCopied] = useState(false);
   const [consent, setConsent] = useState(false);
   const [sent, setSent] = useState(false);
@@ -148,6 +152,170 @@ function LoopDemo({ step, paused }: { step: number; paused: boolean }) {
     {step === 1 && <div className="pp-phone"><div className="pp-phone-notch" /><span className="pp-demo-kicker">A NOTE FROM YOU</span><h3>We&apos;d love to hear about your experience.</h3><p>Your feedback helps us improve.</p><div className="pp-phone-field">The kind of care you feel the difference in.</div><div className="pp-phone-name"><span>How should your name appear?</span><button type="button">First name only</button></div><label className="pp-phone-consent"><input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /> I give permission to share this.</label><button className={`pp-phone-submit ${sent ? "sent" : ""}`} type="button" onClick={() => setSent(true)}>{sent ? "Thank you for sharing your experience!" : "Submit testimonial"}</button></div>}
     {step === 2 && <div className="pp-share-demo"><div className="pp-share-top"><span className="pp-demo-kicker">YOUR STUDIO · SAMPLE DATA</span><span className={`pp-status-pill ${approved ? "approved" : "pending"}`}>{approved ? <CheckCircle2 size={13} /> : <Clock3 size={13} />}{approved ? "Approved" : "Pending"}</span></div><blockquote>“The kind of care you feel the difference in.”</blockquote><span className="pp-share-person">— Maya R.</span><div className="pp-template-row">{(["Minimal", "Bold", "Editorial"] as Template[]).map((item) => <button className={template === item ? "active" : ""} key={item} type="button" onClick={() => setTemplate(item)}>{item}</button>)}</div><div className="pp-share-actions">{!approved && <button className="pp-approve-small" type="button" onClick={() => setApproved(true)}><Check size={14} /> Approve</button>}{approved && <button className="pp-download-chip" type="button"><Download size={14} /> moonwell-testimonial-2026-11-05.png</button>}</div></div>}
   </div>;
+}
+
+function InteractiveLoopCursor({ className = "" }: { className?: string }) {
+  return <motion.span className={`pp-loop-cursor ${className}`.trim()} aria-hidden="true"><svg viewBox="0 0 24 28" width="18" height="21"><path d="M3 2.5 20.5 16l-7.2 1.2 4.5 7-3.1 1.8-4.4-7L5.3 24Z" fill="#fff" stroke="#1a1613" strokeWidth="1.25" strokeLinejoin="round" /></svg><i /></motion.span>;
+}
+
+function InteractiveUrlDemo({ paused, reducedMotion, restartKey }: { paused: boolean; reducedMotion: boolean; restartKey: number }) {
+  const [slug, setSlug] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [clicking, setClicking] = useState(false);
+  const clickTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (clickTimer.current) window.clearTimeout(clickTimer.current);
+    if (reducedMotion || paused) return;
+    const timers = new Set<number>();
+    const schedule = (callback: () => void, delay: number) => {
+      const timer = window.setTimeout(() => { timers.delete(timer); callback(); }, delay);
+      timers.add(timer);
+    };
+    const run = () => {
+      setSlug("");
+      setCopied(false);
+      setClicking(false);
+      LOOP_SLUG.split("").forEach((_, index) => schedule(() => setSlug(LOOP_SLUG.slice(0, index + 1)), (index + 1) * 70));
+      schedule(() => setClicking(true), LOOP_SLUG.length * 70 + 430);
+      schedule(() => setClicking(false), LOOP_SLUG.length * 70 + 700);
+      schedule(() => setCopied(true), LOOP_SLUG.length * 70 + 760);
+      schedule(run, 5200);
+    };
+    run();
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [paused, reducedMotion, restartKey]);
+
+  async function copyUrl() {
+    const value = `https://postproof.app/t/${LOOP_SLUG}`;
+    try {
+      if (navigator.clipboard) await navigator.clipboard.writeText(value);
+      else throw new Error("Clipboard unavailable");
+    } catch {
+      const area = document.createElement("textarea");
+      area.value = value;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+    }
+    setCopied(true);
+    setClicking(true);
+    clickTimer.current = window.setTimeout(() => setClicking(false), 280);
+  }
+
+  const displaySlug = reducedMotion || paused ? LOOP_SLUG : slug;
+  const displayCopied = reducedMotion || paused || copied;
+  return <div className="pp-url-demo" data-cursor="Copy link"><div className="pp-loop-orbit pp-loop-orbit-a" aria-hidden="true"><i /><i /><i /></div><div className="pp-loop-orbit pp-loop-orbit-b" aria-hidden="true"><i /><i /></div><InteractiveLoopCursor className="pp-url-cursor" /><div className="pp-url-demo-content"><button className={`pp-browser-pill ${hovered ? "is-hovered" : ""} ${clicking ? "is-clicking" : ""}`} type="button" onClick={copyUrl} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} aria-label="Copy your Postproof collection link"><span>postproof.app/t/</span><b>{displaySlug}</b><i className="pp-browser-caret" /></button><span className={`pp-url-tooltip ${hovered ? "is-visible" : ""}`} role="status">Click to copy</span><motion.div className="pp-copy-toast" initial={false} animate={{ y: displayCopied ? 0 : 12, opacity: displayCopied ? 1 : 0, scale: displayCopied ? 1 : .94 }} transition={{ type: "spring", stiffness: 420, damping: 26 }} aria-live="polite"><Check size={14} /> Copied</motion.div></div></div>;
+}
+
+function InteractivePhoneDemo({ paused, reducedMotion, restartKey }: { paused: boolean; reducedMotion: boolean; restartKey: number }) {
+  const [message, setMessage] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [namePulse, setNamePulse] = useState(false);
+  const manualRef = useRef(false);
+
+  useEffect(() => {
+    manualRef.current = false;
+    if (reducedMotion || paused) return;
+    const timers = new Set<number>();
+    const schedule = (callback: () => void, delay: number) => {
+      const timer = window.setTimeout(() => { timers.delete(timer); callback(); }, delay);
+      timers.add(timer);
+    };
+    const run = () => {
+      if (manualRef.current) return;
+      setMessage("");
+      setConsent(false);
+      setSent(false);
+      setNamePulse(false);
+      LOOP_QUOTE.split("").forEach((_, index) => schedule(() => { if (!manualRef.current) setMessage(LOOP_QUOTE.slice(0, index + 1)); }, (index + 1) * 34));
+      const typedAt = LOOP_QUOTE.length * 34;
+      schedule(() => { if (!manualRef.current) setNamePulse(true); }, typedAt + 450);
+      schedule(() => { if (!manualRef.current) setConsent(true); }, typedAt + 920);
+      schedule(() => { if (!manualRef.current) setSent(true); }, typedAt + 1370);
+      schedule(run, typedAt + 3900);
+    };
+    run();
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [paused, reducedMotion, restartKey]);
+
+  function stopScript() { manualRef.current = true; }
+  const displayMessage = reducedMotion || paused ? LOOP_QUOTE : message;
+  const displayConsent = reducedMotion || paused || consent;
+  const displaySent = reducedMotion || paused || sent;
+  return <div className="pp-phone-wrap"><motion.div className="pp-phone" animate={reducedMotion || paused ? undefined : { y: [0, -6, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}><div className="pp-phone-notch" /><span className="pp-demo-kicker">A NOTE FROM YOU</span><h3>We&apos;d love to hear about your experience.</h3><p>Your feedback helps us improve.</p><label className="pp-phone-field-label" htmlFor="loop-feedback">Your experience</label><textarea id="loop-feedback" className="pp-phone-field" value={displayMessage} onFocus={stopScript} onChange={(event) => { stopScript(); setMessage(event.target.value); }} aria-label="Your experience" placeholder="Tell us what stood out..." /><div className={`pp-phone-name ${namePulse && !paused && !reducedMotion ? "is-pulsing" : ""}`}><span>How should your name appear?</span><button type="button" onClick={stopScript}>First name only</button></div><label className={`pp-phone-consent ${displayConsent ? "is-checked" : ""}`}><input type="checkbox" checked={displayConsent} onChange={(event) => { stopScript(); setConsent(event.target.checked); }} /><span className="pp-checkbox-mark"><Check size={11} /></span><span>I give permission to share this.</span></label><button className={`pp-phone-submit ${displaySent ? "sent" : ""}`} type="button" disabled={!displayConsent} onClick={() => { stopScript(); setSent(true); }}>{displaySent ? <><Check size={14} /> Thank you for sharing</> : "Submit testimonial"}</button>{displaySent && <span className="pp-phone-confetti" aria-hidden="true">+ · • + • + · • + · • +</span>}</motion.div><InteractiveLoopCursor className="pp-phone-cursor" /></div>;
+}
+
+function InteractiveReviewDemo({ paused, reducedMotion, restartKey }: { paused: boolean; reducedMotion: boolean; restartKey: number }) {
+  const [approved, setApproved] = useState(false);
+  const [template, setTemplate] = useState<Template>("Minimal");
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const manualRef = useRef(false);
+  const reviewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    manualRef.current = false;
+    if (reducedMotion || paused) return;
+    const timers = new Set<number>();
+    const schedule = (callback: () => void, delay: number) => {
+      const timer = window.setTimeout(() => { timers.delete(timer); callback(); }, delay);
+      timers.add(timer);
+    };
+    const run = () => {
+      if (manualRef.current) return;
+      setApproved(false);
+      setTemplate("Minimal");
+      schedule(() => { if (!manualRef.current) setTemplate("Editorial"); }, 700);
+      schedule(() => { if (!manualRef.current) setTemplate("Bold"); }, 1400);
+      schedule(() => { if (!manualRef.current) setApproved(true); }, 2250);
+      schedule(run, 6000);
+    };
+    run();
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [paused, reducedMotion, restartKey]);
+
+  function chooseTemplate(value: Template) { manualRef.current = true; setTemplate(value); }
+  function moveCard(event: React.PointerEvent<HTMLDivElement>) {
+    const rect = reviewRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setTilt({ x: ((event.clientY - rect.top) / rect.height - .5) * -8, y: ((event.clientX - rect.left) / rect.width - .5) * 8 });
+  }
+  const displayApproved = reducedMotion || paused || approved;
+  const displayTemplate = reducedMotion || paused ? "Bold" : template;
+  return <div className="pp-review-stage"><motion.div ref={reviewRef} className={`pp-share-demo pp-review-demo pp-review-${displayTemplate.toLowerCase()} ${displayApproved ? "is-approved" : ""}`} style={{ transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }} onPointerMove={moveCard} onPointerLeave={() => setTilt({ x: 0, y: 0 })}><div className="pp-share-top"><span className="pp-demo-kicker">YOUR STUDIO <span aria-hidden="true">·</span> SAMPLE DATA</span><motion.span className={`pp-status-pill ${displayApproved ? "approved" : "pending"}`} animate={{ scale: displayApproved ? [1, 1.06, 1] : 1 }} transition={{ duration: .45 }} aria-live="polite">{displayApproved ? <CheckCircle2 size={13} /> : <Clock3 size={13} />}{displayApproved ? "Approved" : "Pending"}</motion.span></div><motion.blockquote layout className={`pp-review-quote pp-review-quote-${displayTemplate.toLowerCase()}`}><span className="pp-review-quote-mark" aria-hidden="true">&ldquo;</span>{LOOP_QUOTE}<span className="pp-review-quote-end" aria-hidden="true">&rdquo;</span></motion.blockquote><span className="pp-share-person">&mdash; Maya R.</span><div className="pp-template-row" role="list" aria-label="Graphic styles">{(["Minimal", "Bold", "Editorial"] as Template[]).map((item) => <button className={displayTemplate === item ? "active" : ""} key={item} type="button" onClick={() => chooseTemplate(item)}>{displayTemplate === item && <motion.span className="pp-template-highlight" layoutId="loop-template-highlight" />}{item}</button>)}</div><div className="pp-share-actions"><button className={`pp-approve-small ${displayApproved ? "is-approved" : ""}`} type="button" onClick={() => { manualRef.current = true; setApproved(true); }}><Check size={14} /> {displayApproved ? "Approved" : "Approve"}</button>{displayApproved && <motion.div className="pp-share-actions-extra" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}><button type="button"><Copy size={13} /> Copy embed</button><button type="button"><Download size={13} /> Download image</button></motion.div>}</div><span className="pp-review-glow" aria-hidden="true" /></motion.div><InteractiveLoopCursor className="pp-review-cursor" /></div>;
+}
+
+function InteractiveLoopDemo({ step, paused, reducedMotion, restartKey }: { step: number; paused: boolean; reducedMotion: boolean; restartKey: number }) {
+  const transition = reducedMotion ? { duration: 0 } : { duration: .45, ease: [0.2, 0.8, 0.2, 1] as const };
+  return <div className={`pp-loop-demo pp-loop-demo-${step + 1}`} id="loop-panel" role="tabpanel" aria-labelledby={`loop-tab-${step}`} aria-live="polite"><span className="pp-stage-glow" aria-hidden="true" /><AnimatePresence mode="wait" initial={false}><motion.div key={step} className="pp-loop-stage-content" initial={{ opacity: 0, y: 14, filter: reducedMotion ? "blur(0px)" : "blur(6px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -10, filter: reducedMotion ? "blur(0px)" : "blur(6px)" }} transition={transition}>{step === 0 && <InteractiveUrlDemo paused={paused} reducedMotion={reducedMotion} restartKey={restartKey} />}{step === 1 && <InteractivePhoneDemo paused={paused} reducedMotion={reducedMotion} restartKey={restartKey} />}{step === 2 && <InteractiveReviewDemo paused={paused} reducedMotion={reducedMotion} restartKey={restartKey} />}</motion.div></AnimatePresence></div>;
+}
+
+function LoopDemo({ step, paused }: { step: number; paused: boolean }) {
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [sectionPaused, setSectionPaused] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReducedMotion(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+  useEffect(() => {
+    const section = document.getElementById("the-loop");
+    if (!section) return;
+    const pause = () => setSectionPaused(true);
+    const resume = () => setSectionPaused(false);
+    section.addEventListener("mouseenter", pause);
+    section.addEventListener("mouseleave", resume);
+    section.addEventListener("focusin", pause);
+    section.addEventListener("focusout", resume);
+    return () => { section.removeEventListener("mouseenter", pause); section.removeEventListener("mouseleave", resume); section.removeEventListener("focusin", pause); section.removeEventListener("focusout", resume); };
+  }, []);
+  void LegacyLoopDemo;
+  return <InteractiveLoopDemo step={step} paused={paused || sectionPaused} reducedMotion={reducedMotion} restartKey={step} />;
 }
 
 function BeforeAfter() {
@@ -179,6 +347,10 @@ export default function LandingPage() {
   const [paused, setPaused] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loopStep, setLoopStep] = useState(0);
+  const [loopCycle, setLoopCycle] = useState(0);
+  const [loopActivity, setLoopActivity] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const [business, setBusiness] = useState("");
   const [copied, setCopied] = useState(false);
   const [shareChoice, setShareChoice] = useState("");
@@ -187,11 +359,66 @@ export default function LandingPage() {
   const pageRef = useRef<HTMLElement>(null);
   const slug = useMemo(() => slugify(business), [business]);
 
+  const loopPaused = paused || loopActivity || !pageVisible;
+
   useEffect(() => {
     const onScroll = () => { const max = document.documentElement.scrollHeight - window.innerHeight; setProgress(max ? window.scrollY / max : 0); };
-    const onKey = (event: KeyboardEvent) => { if (event.key === "ArrowDown" || event.key === "ArrowRight") setLoopStep((step) => Math.min(2, step + 1)); if (event.key === "ArrowUp" || event.key === "ArrowLeft") setLoopStep((step) => Math.max(0, step - 1)); };
-    onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); window.addEventListener("keydown", onKey); return () => { window.removeEventListener("scroll", onScroll); window.removeEventListener("keydown", onKey); };
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onMotionChange = () => setReducedMotion(media.matches);
+    const onVisibility = () => setPageVisible(!document.hidden);
+    onMotionChange(); onVisibility(); onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); media.addEventListener("change", onMotionChange); document.addEventListener("visibilitychange", onVisibility);
+    return () => { window.removeEventListener("scroll", onScroll); media.removeEventListener("change", onMotionChange); document.removeEventListener("visibilitychange", onVisibility); };
   }, []);
+
+  useEffect(() => {
+    if (reducedMotion || loopPaused) return;
+    const timer = window.setInterval(() => { setLoopStep((step) => (step + 1) % loopSteps.length); setLoopCycle((cycle) => cycle + 1); }, LOOP_DURATION);
+    return () => window.clearInterval(timer);
+  }, [loopPaused, reducedMotion, loopCycle]);
+
+  useEffect(() => {
+    const section = document.getElementById("the-loop");
+    if (section) section.classList.toggle("pp-loop-paused", loopPaused);
+  }, [loopPaused]);
+
+  useEffect(() => {
+    const section = document.getElementById("the-loop");
+    if (!section) return;
+    const pause = () => setLoopActivity(true);
+    const resume = () => setLoopActivity(false);
+    section.addEventListener("mouseenter", pause);
+    section.addEventListener("mouseleave", resume);
+    section.addEventListener("focusin", pause);
+    section.addEventListener("focusout", resume);
+    return () => { section.removeEventListener("mouseenter", pause); section.removeEventListener("mouseleave", resume); section.removeEventListener("focusin", pause); section.removeEventListener("focusout", resume); };
+  }, []);
+
+  useEffect(() => {
+    const syncTabs = () => document.querySelectorAll<HTMLElement>("#the-loop .pp-step-list button").forEach((tab, index) => {
+      tab.id = `loop-tab-${index}`;
+      tab.tabIndex = loopStep === index ? 0 : -1;
+      tab.setAttribute("aria-controls", "loop-panel");
+    });
+    const onKey = (event: KeyboardEvent) => {
+      const active = document.activeElement as HTMLElement | null;
+      const tabs = Array.from(document.querySelectorAll<HTMLElement>("#the-loop .pp-step-list button"));
+      const index = active ? tabs.indexOf(active) : -1;
+      if (index < 0) return;
+      let next = index;
+      if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = tabs.length - 1;
+      else if (event.key === "ArrowDown" || event.key === "ArrowRight") next = (index + 1) % tabs.length;
+      else if (event.key === "ArrowUp" || event.key === "ArrowLeft") next = (index + tabs.length - 1) % tabs.length;
+      else if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      setLoopStep(next);
+      setLoopCycle((cycle) => cycle + 1);
+      window.requestAnimationFrame(() => tabs[next]?.focus());
+    };
+    syncTabs();
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [loopStep]);
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
