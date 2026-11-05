@@ -7,6 +7,7 @@
   position: relative;
   isolation: isolate;
   display: inline-flex;
+  overflow: hidden;
   align-items: center;
   justify-content: center;
   gap: 0.5em;
@@ -38,7 +39,7 @@
 .specular-button--lg { padding: 18px 38px; font-size: 1.125rem; }
 .specular-button__light { position: absolute; inset: -24px; z-index: 1; display: block; width: calc(100% + 48px); height: calc(100% + 48px); pointer-events: none; }
 .specular-button__label { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: inherit; }
-.specular-effect { position: relative; isolation: isolate; }
+.specular-effect { position: relative; isolation: isolate; overflow: hidden; }
 
 /* Keep the shared button API's sizing variations while adding the same light effect. */
 .specular-button.ui-button.ui-button-size-sm { min-height: 32px; padding-inline: 12px; font-size: 14px; }
