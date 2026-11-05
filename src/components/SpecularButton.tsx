@@ -135,6 +135,21 @@ export type SpecularButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElem
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 const wrap = (value: number) => value - Math.floor(value);
 
+function tintWithOpacity(color: string, opacity: number) {
+  const amount = clamp(opacity, 0, 1);
+  if (amount === 0) return "transparent";
+  if (amount === 1) return color;
+  const match = color.trim().match(/^#([\da-f]{3}|[\da-f]{6})$/i);
+  if (match) {
+    const hex = match[1].length === 3 ? match[1].split("").map((character) => character + character).join("") : match[1];
+    const red = Number.parseInt(hex.slice(0, 2), 16);
+    const green = Number.parseInt(hex.slice(2, 4), 16);
+    const blue = Number.parseInt(hex.slice(4, 6), 16);
+    return `rgba(${red}, ${green}, ${blue}, ${amount})`;
+  }
+  return `color-mix(in srgb, ${color} ${amount * 100}%, transparent)`;
+}
+
 function loopPosition(x: number, y: number, halfX: number, halfY: number, radius: number) {
   const innerX = halfX - radius;
   const innerY = halfY - radius;
@@ -482,6 +497,7 @@ const SpecularButton = React.forwardRef<HTMLElement, SpecularButtonProps>(functi
     "--sb-radius": `${radius}px`,
     "--sb-tint": tint,
     "--sb-tint-opacity": tintOpacity,
+    "--sb-background": tintWithOpacity(tint, tintOpacity),
     "--sb-blur": `${blur}px`,
     "--sb-text-color": textColor,
     ...style,
