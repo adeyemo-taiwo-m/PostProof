@@ -64,12 +64,12 @@ function Wordmark({ footer = false }: { footer?: boolean }) {
   return <Link className={`pp-wordmark ${footer ? "pp-wordmark-footer" : ""}`} href="/" aria-label="Postproof home"><span className="pp-wordmark-mark">“</span><span>Postproof</span></Link>;
 }
 
-type CardPosition = "front" | "middle" | "back" | "reserve";
+type CardPosition = "front" | "middle" | "back";
 type CardEvents = { onClick?: () => void; onPointerEnter?: () => void; onPointerMove?: (event: React.PointerEvent<HTMLElement>) => void; onPointerLeave?: () => void; onPointerDown?: () => void; onPointerUp?: () => void; onPointerCancel?: () => void; cardRef?: React.RefObject<HTMLElement | null> };
 
 function QuoteCard({ sample, position, format, text, events }: { sample: (typeof samples)[number]; position: CardPosition; format: Format; text?: string; events?: CardEvents }) {
   const cardText = position === "front" && text ? text : sample.quote;
-  return <motion.article ref={events?.cardRef} className={`pp-quote-card pp-card-${position} pp-card-${sample.tone} pp-format-${format.replace(":", "-")}`} data-cursor={position === "front" ? "Try me" : position === "reserve" ? "Print" : "Bring forward"} aria-label={`${sample.template} sample graphic from ${sample.brand}`} onClick={(event) => { event.stopPropagation(); events?.onClick?.(); }} onPointerEnter={events?.onPointerEnter} onPointerMove={events?.onPointerMove} onPointerLeave={events?.onPointerLeave} onPointerDown={events?.onPointerDown} onPointerUp={events?.onPointerUp} onPointerCancel={events?.onPointerCancel} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .18 }}>
+  return <motion.article layout ref={events?.cardRef} className={`pp-quote-card pp-card-${position} pp-card-${sample.tone} pp-format-${format.replace(":", "-")}`} data-cursor={position === "front" ? "Try me" : "Bring forward"} aria-label={`${sample.template} sample graphic from ${sample.brand}`} onClick={(event) => { event.stopPropagation(); events?.onClick?.(); }} onPointerEnter={events?.onPointerEnter} onPointerMove={events?.onPointerMove} onPointerLeave={events?.onPointerLeave} onPointerDown={events?.onPointerDown} onPointerUp={events?.onPointerUp} onPointerCancel={events?.onPointerCancel} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ layout: { type: "spring", stiffness: 260, damping: 26 }, opacity: { duration: .18 } }}>
     <div className="pp-card-head" data-card-layer="chrome"><span className="pp-card-mark">“</span><span>{sample.brand.toUpperCase()}</span><span className="pp-card-sample" data-card-layer="sample">SAMPLE</span></div>
     <div className="pp-card-template" data-card-layer="chrome">{sample.template.toUpperCase()}</div>
     <div className="pp-card-quote" data-card-layer="quote">“{cardText}”</div>
@@ -78,11 +78,12 @@ function QuoteCard({ sample, position, format, text, events }: { sample: (typeof
 }
 
 function HeroStack({ paused }: { paused: boolean }) {
-  const [index, setIndex] = useState(0);
+  const [deck, setDeck] = useState([0, 1, 3]);
   const format: Format = "4:5";
   const [text, setText] = useState("");
   const [isPrinting, setIsPrinting] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [typingPulse, setTypingPulse] = useState(false);
   const [announcement, setAnnouncement] = useState("");
@@ -93,12 +94,12 @@ function HeroStack({ paused }: { paused: boolean }) {
   const frame = useRef<number | null>(null);
   const announcementTimer = useRef<number | null>(null);
   const typingTimer = useRef<number | null>(null);
-  const current = samples[index];
+  const current = samples[deck[0]];
   function announce(message: string) { if (announcementTimer.current) window.clearTimeout(announcementTimer.current); setAnnouncement(message); announcementTimer.current = window.setTimeout(() => setAnnouncement(""), 900); }
-  function updateCard(nextIndex: number) { setIndex(nextIndex); setStampKey((value) => value + 1); announce("Card updated"); }
-  function shuffle() { updateCard((index + 1) % samples.length); }
-  function promote(offset: number) { updateCard((index + offset) % samples.length); }
-  function printCard() { if (isPrinting) return; setIsPrinting(true); window.setTimeout(() => { setIndex((value) => (value + 1) % samples.length); setStampKey((value) => value + 1); setIsPrinting(false); announce("Fresh card printed"); }, 420); }
+  function rotateDeck(offset = 1, message = "Card updated") { setDeck((value) => { const amount = offset % value.length; return [...value.slice(amount), ...value.slice(0, amount)]; }); setStampKey((value) => value + 1); announce(message); }
+  function shuffle() { rotateDeck(); }
+  function promote(offset: number) { rotateDeck(offset); }
+  function printCard() { if (isPrinting) return; setIsPrinting(true); window.setTimeout(() => { setDeck((value) => [...value.slice(1), value[0]]); setStampKey((value) => value + 1); setIsPrinting(false); announce("Fresh card printed"); }, 420); }
   function setTilt(event: React.PointerEvent<HTMLElement>) {
     if (paused || !frontRef.current) return;
     const rect = frontRef.current.getBoundingClientRect();
@@ -111,20 +112,21 @@ function HeroStack({ paused }: { paused: boolean }) {
   function onType(value: string) { setText(value); setTypingPulse(true); announce("Card updated"); if (typingTimer.current) window.clearTimeout(typingTimer.current); typingTimer.current = window.setTimeout(() => setTypingPulse(false), 120); }
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) { if (event.key === " " || event.key === "Enter") { event.preventDefault(); shuffle(); } }
   useEffect(() => () => { if (frame.current) cancelAnimationFrame(frame.current); if (announcementTimer.current) window.clearTimeout(announcementTimer.current); if (typingTimer.current) window.clearTimeout(typingTimer.current); }, []);
+  useEffect(() => { if (paused || inputFocused || isPrinting || isHovered) return; const timer = window.setInterval(() => rotateDeck(), 6500); return () => window.clearInterval(timer); }, [paused, inputFocused, isPrinting, isHovered]);
+  const [frontIndex, middleIndex, backIndex] = deck;
   return <div className={`pp-hero-demo ${paused ? "pp-demo-paused" : ""}`} data-cursor="Try me">
     <div className="pp-orbit pp-orbit-one" aria-hidden="true" /><div className="pp-orbit pp-orbit-two" aria-hidden="true" /><span className="pp-orbit-dot" aria-hidden="true" />
     <div className="pp-hero-sticker">NEW · YOUR WORDS, BETTER PRESENTED</div>
     <div className={`pp-stack-area pp-area-${format.replace(":", "-")}`}>
       <div className={`pp-stack ${isHovered ? "is-hovered" : ""} ${isPressed ? "is-pressed" : ""} ${isPrinting ? "is-printing" : ""} ${typingPulse ? "is-typing" : ""}`} tabIndex={0} role="button" aria-label="Sample testimonial cards" onKeyDown={onKeyDown} onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }} onTouchEnd={(event) => { const end = event.changedTouches[0]?.clientX ?? 0; const swiped = touchStart.current !== null && Math.abs(end - touchStart.current) > 60; const touchedCard = (event.target as HTMLElement).closest(".pp-quote-card"); if (swiped || !touchedCard) { shuffle(); touchActive.current = swiped; if (swiped) window.setTimeout(() => { touchActive.current = false; }, 400); } touchStart.current = null; }}>
-        <QuoteCard sample={samples[(index + 3) % samples.length]} position="reserve" format={format} events={{ onClick: () => { if (!touchActive.current) promote(3); } }} />
-        <QuoteCard sample={samples[(index + 2) % samples.length]} position="back" format={format} events={{ onClick: () => { if (!touchActive.current) promote(2); } }} />
-        <QuoteCard sample={samples[(index + 1) % samples.length]} position="middle" format={format} events={{ onClick: () => { if (!touchActive.current) promote(1); } }} />
-        <QuoteCard sample={current} position="front" format={format} text={text} events={{ cardRef: frontRef, onClick: () => { if (!touchActive.current) shuffle(); }, onPointerEnter: () => setIsHovered(true), onPointerMove: setTilt, onPointerLeave: () => { setIsHovered(false); setIsPressed(false); clearTilt(); }, onPointerDown: () => setIsPressed(true), onPointerUp: () => setIsPressed(false), onPointerCancel: () => setIsPressed(false) }} />
+        <QuoteCard key={backIndex} sample={samples[backIndex]} position="back" format={format} events={{ onClick: () => { if (!touchActive.current) promote(2); } }} />
+        <QuoteCard key={middleIndex} sample={samples[middleIndex]} position="middle" format={format} events={{ onClick: () => { if (!touchActive.current) promote(1); } }} />
+        <QuoteCard key={frontIndex} sample={current} position="front" format={format} text={text} events={{ cardRef: frontRef, onClick: () => { if (!touchActive.current) shuffle(); }, onPointerEnter: () => setIsHovered(true), onPointerMove: setTilt, onPointerLeave: () => { setIsHovered(false); setIsPressed(false); clearTilt(); }, onPointerDown: () => setIsPressed(true), onPointerUp: () => setIsPressed(false), onPointerCancel: () => setIsPressed(false) }} />
         <motion.div key={`${stampKey}-${current.brand}`} className={`pp-approval-stamp pp-stamp-${current.tone}`} initial={{ opacity: 0, scale: 2.2, rotate: -22 }} animate={{ opacity: 1, scale: 1, rotate: -12 }} transition={{ type: "spring", stiffness: 420, damping: 18 }}><Check size={13} /> APPROVED WITH CONSENT</motion.div>
       </div>
       <button className="pp-shuffle" type="button" onClick={shuffle} aria-label="Shuffle cards" title="Shuffle cards"><Quote size={17} /></button>
     </div>
-    <div className="pp-hero-controls"><label className={`pp-live-type ${text.length > 80 ? "is-warning" : ""}`}><span className="sr-only">Type something kind about your work</span><MessageCircle size={16} /><input maxLength={90} value={text} onChange={(event) => onType(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); printCard(); } }} placeholder="Type something kind about your work..." /><span>{text.length}/90</span><button type="button" onClick={printCard} aria-label="Print a fresh testimonial card"><ArrowUpRight size={16} /></button></label><p className="pp-demo-caption">Just a preview. Nothing is sent.</p><span className="sr-only" aria-live="polite">{announcement}</span></div>
+    <div className="pp-hero-controls"><label className={`pp-live-type ${text.length > 80 ? "is-warning" : ""}`}><span className="sr-only">Type something kind about your work</span><MessageCircle size={16} /><input maxLength={90} value={text} onFocus={() => setInputFocused(true)} onBlur={() => setInputFocused(false)} onChange={(event) => onType(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); printCard(); } }} placeholder="Type something kind about your work..." /><span>{text.length}/90</span><button type="button" onClick={printCard} aria-label="Print a fresh testimonial card"><ArrowUpRight size={16} /></button></label><p className="pp-demo-caption">Just a preview. Nothing is sent.</p><span className="sr-only" aria-live="polite">{announcement}</span></div>
   </div>;
 }
 

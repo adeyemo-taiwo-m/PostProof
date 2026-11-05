@@ -27,7 +27,7 @@
 @media (max-width: 639px) { .pp-container { width: calc(100% - 32px); }.pp-nav { width: calc(100% - 24px); }.pp-nav-links, .pp-nav-actions { display: none; }.pp-menu-button { display: grid; }.pp-hero { min-height: auto; padding: 125px 0 90px; }.pp-hero-copy h1 { font-size: clamp(42px, 13vw, 60px); }.pp-hero-copy > p { font-size: 17px; }.pp-hero-actions { align-items: flex-start; flex-direction: column; gap: 18px; }.pp-hero-demo { min-height: 500px; margin-top: 15px; transform: scale(.86); transform-origin: top center; width: 116%; margin-left: -8%; margin-bottom: -60px; }.pp-hero-sticker { right: 3%; font-size: 10px; }.pp-stack { left: 50%; }.pp-brand-band-inner { display: block; padding: 17px 0 20px; }.pp-band-label { min-width: 0; }.pp-pause-button { position: absolute; top: 16px; right: 0; }.pp-marquee { margin-top: 24px; font-size: 16px; }.pp-loop, .pp-best-words, .pp-studio, .pp-link-claim { padding: 80px 0 90px; }.pp-section-intro { display: block; margin-bottom: 35px; }.pp-section-intro h2 { font-size: clamp(40px, 13vw, 58px); }.pp-section-intro > div:last-child { margin-top: 28px; }.pp-section-intro p { font-size: 17px; }.pp-step-list { display: grid; grid-template-columns: 1fr; }.pp-step-list button { display: grid; grid-template-columns: 48px 1fr 18px; min-height: 88px; }.pp-step-number { margin-bottom: 0; font-size: 32px; }.pp-loop-demo { min-height: 400px; }.pp-browser-pill { max-width: calc(100% - 24px); font-size: 13px; }.pp-share-demo { width: calc(100% - 28px); padding: 20px; }.pp-share-demo blockquote { font-size: 26px; }.pp-before-after { height: 360px; }.pp-after-card { padding: 35px; }.pp-after-quote { font-size: 35px; }.pp-benefit-rows { grid-template-columns: 1fr; gap: 0; }.pp-benefit-rows > div { min-height: 100px; }.pp-studio-stage { width: calc(100% + 20px); margin-left: -10px; padding: 20px 10px 25px; }.pp-studio-content { padding: 20px 14px; }.pp-studio-head h3 { font-size: 24px; }.pp-stats-row { gap: 5px; }.pp-stats-row > div { padding: 10px; }.pp-stats-row span { min-height: 32px; font-size: 11px; }.pp-stats-row b { margin-top: 7px; font-size: 28px; }.pp-review-list, .pp-studio-graphic { padding: 12px; }.pp-url-pill { min-height: 82px; flex-wrap: wrap; justify-content: center; border-radius: var(--radius-xl); font-size: 18px; }.pp-url-pill button { width: 100%; min-height: 44px; justify-content: center; margin-left: 0; }.pp-big-quote { min-height: 620px; }.pp-big-quote-inner { width: calc(100% - 32px); }.pp-big-quote blockquote { margin: 24px 0 40px; font-size: clamp(43px, 13vw, 65px); }.pp-quote-corner { font-size: 48vw; }.pp-proof-wall { top: 70px; }.pp-proof-wall span { font-size: 14px; }.pp-final { min-height: 580px; padding: 100px 0 80px; }.pp-final h2 { font-size: clamp(48px, 14vw, 72px); }.pp-footer-bottom { display: flex; flex-wrap: wrap; gap: 18px; }.pp-footer-bottom p { width: 100%; order: 4; }.pp-footer-bottom > span { margin-left: auto; }.pp-cursor { display: none; } }
 @media (prefers-reduced-motion: reduce) { .pp-page *, .pp-page *::before, .pp-page *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }.pp-cursor { display: none; } }
 
-/* Hero card press refinement: the deck has its own reserved stage so motion can never
+/* Hero deck refinement: the deck has its own reserved stage so motion can never
    paint over the live input below it. The variables keep pointer work compositor-only. */
 .pp-hero-demo { min-height: 0; }
 .pp-orbit { transform-origin: 50% 50%; will-change: transform; animation: pp-orbit-spin 30s linear infinite; }
@@ -54,18 +54,12 @@
 .pp-card-front { animation-delay: -1.2s; }
 .pp-card-middle { animation-delay: -3.4s; }
 .pp-card-back { animation-delay: -5.7s; }
-.pp-card-reserve { animation: none; }
 .pp-card-middle::after, .pp-card-back::after { border-color: rgb(20 17 15 / .06); }
 .pp-card-middle .pp-card-mark, .pp-card-back .pp-card-mark { color: var(--ink); background: var(--paper); }
 .pp-card-middle .pp-card-template, .pp-card-back .pp-card-template { top: 62px; color: var(--ink); }
-.pp-card-middle .pp-card-quote, .pp-card-middle .pp-card-foot, .pp-card-back .pp-card-quote, .pp-card-back .pp-card-foot { opacity: 0; }
-.pp-card-middle, .pp-card-back { clip-path: inset(0 0 78% 0 round var(--radius-xl)); mask-image: linear-gradient(to bottom, #000 0 76%, transparent 100%); }
+.pp-card-middle .pp-card-quote, .pp-card-middle .pp-card-foot, .pp-card-back .pp-card-quote, .pp-card-back .pp-card-foot { opacity: 1; }
+.pp-card-middle, .pp-card-back { clip-path: none; mask-image: none; }
 .pp-card-back .pp-card-quote { font-family: Georgia, serif; }
-.pp-card-reserve { z-index: 1; color: var(--ink); background: var(--surface); opacity: 0; transform: translateY(120px) rotateZ(0deg); }
-.pp-format-1-1.pp-card-reserve { height: 315px; }
-.pp-format-9-16.pp-card-reserve { height: 480px; }
-.pp-card-reserve::after { border-color: rgb(20 17 15 / .06); }
-.pp-card-reserve .pp-card-template { color: var(--ink); }
 .pp-stack.is-hovered .pp-card-front { --hover-scale: .03; }
 .pp-stack.is-pressed .pp-card-front { --hover-scale: -.02; }
 .pp-stack.is-hovered .pp-card-middle { transform: translate(54px, 16px) rotateZ(10deg); }
@@ -75,7 +69,6 @@
 .pp-card-middle::before { position: absolute; z-index: 7; inset: -20% -60%; content: ""; background: linear-gradient(110deg, transparent 42%, rgb(255 255 255 / .16) 50%, transparent 58%); opacity: 0; pointer-events: none; transform: translateX(-55%); transition: opacity .18s ease, transform .5s var(--pp-ease); }
 .pp-card-middle:hover::before, .pp-card-middle:focus-visible::before { opacity: 1; transform: translateX(55%); }
 .pp-stack.is-printing .pp-card-front { opacity: .2; transform: translateY(120px) rotateZ(-3deg) scale(.98); }
-.pp-stack.is-printing .pp-card-reserve { z-index: 7; opacity: 1; transform: translateY(0) rotateZ(-1deg); }
 .pp-stack.is-printing .pp-approval-stamp { opacity: 0 !important; }
 .pp-demo-paused .pp-quote-card { animation-play-state: paused; }
 .pp-stack.is-typing .pp-card-front { animation: pp-type-pulse .12s ease; }
@@ -106,10 +99,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pp-stack { perspective: none; }
-  .pp-quote-card, .pp-card-front, .pp-card-middle, .pp-card-back, .pp-card-reserve { transform: none !important; translate: 0 0 !important; animation: none !important; transition: opacity .12s ease !important; }
+  .pp-quote-card, .pp-card-front, .pp-card-middle, .pp-card-back { transform: none !important; translate: 0 0 !important; animation: none !important; transition: opacity .12s ease !important; }
   .pp-card-front::before, .pp-card-middle::before { display: none; }
   .pp-orbit, .pp-orbit-dot { animation: none !important; }
   .pp-card-middle, .pp-card-back { clip-path: none; mask-image: none; }
-  .pp-card-middle .pp-card-quote, .pp-card-middle .pp-card-foot, .pp-card-back .pp-card-quote, .pp-card-back .pp-card-foot { opacity: .18; }
-  .pp-stack.is-printing .pp-card-reserve { opacity: 1; }
+  .pp-card-middle .pp-card-quote, .pp-card-middle .pp-card-foot, .pp-card-back .pp-card-quote, .pp-card-back .pp-card-foot { opacity: 1; }
 }
