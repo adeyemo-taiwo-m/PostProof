@@ -51,7 +51,7 @@ function setFloodOrigin(event: React.PointerEvent<HTMLElement>, variant: ButtonV
   event.currentTarget.style.setProperty("--button-y", `${event.clientY - rect.top}px`);
 }
 
-function specularOptions(variant: ButtonVariant, shape: ButtonShape): Pick<SpecularButtonProps, "radius" | "tint" | "tintOpacity" | "textColor" | "lineColor" | "baseColor"> {
+function specularOptions(variant: ButtonVariant, shape: ButtonShape): Pick<SpecularButtonProps, "radius" | "tint" | "tintOpacity" | "textColor" | "lineColor" | "baseColor" | "intensity" | "idleIntensity" | "glow"> {
   const options = {
     radius: shape === "pill" ? 999 : 12,
     tint: "#F2542D",
@@ -59,6 +59,9 @@ function specularOptions(variant: ButtonVariant, shape: ButtonShape): Pick<Specu
     textColor: "#FAF7F2",
     lineColor: "#FAF7F2",
     baseColor: "#F2542D",
+    intensity: 1,
+    idleIntensity: 0.16,
+    glow: 0.5,
   };
   if (variant === "secondary" || variant === "chip") return { ...options, tint: "#14110F", textColor: "#FAF7F2", lineColor: "#FAF7F2", baseColor: "#14110F" };
   if (variant === "outline" || variant === "ghost" || variant === "link" || variant === "link-draw") return { ...options, tint: "#FAF7F2", tintOpacity: 0, textColor: "#14110F", lineColor: "#F2542D", baseColor: "#8C847A" };
