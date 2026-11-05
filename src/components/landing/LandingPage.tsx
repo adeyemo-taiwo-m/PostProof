@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
@@ -64,12 +65,12 @@ function Wordmark({ footer = false }: { footer?: boolean }) {
 
 function QuoteCard({ sample, position, format, text }: { sample: (typeof samples)[number]; position: "front" | "middle" | "back"; format: Format; text?: string }) {
   const cardText = position === "front" && text ? text : sample.quote;
-  return <article className={`pp-quote-card pp-card-${position} pp-card-${sample.tone} pp-format-${format.replace(":", "-")}`} aria-label={`${sample.template} sample graphic from ${sample.brand}`}>
+  return <motion.article className={`pp-quote-card pp-card-${position} pp-card-${sample.tone} pp-format-${format.replace(":", "-")}`} aria-label={`${sample.template} sample graphic from ${sample.brand}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .18 }}>
     <div className="pp-card-head"><span className="pp-card-mark">“</span><span>{sample.brand.toUpperCase()}</span><span className="pp-card-sample">SAMPLE</span></div>
     <div className="pp-card-template">{sample.template}</div>
     <div className="pp-card-quote">“{cardText}”</div>
     <div className="pp-card-foot"><span>— {position === "front" && text ? "You" : sample.person}</span><span className="pp-card-rule" /></div>
-  </article>;
+  </motion.article>;
 }
 
 function HeroStack({ paused }: { paused: boolean }) {
@@ -87,7 +88,7 @@ function HeroStack({ paused }: { paused: boolean }) {
       <QuoteCard sample={samples[(index + 2) % samples.length]} position="back" format={format} />
       <QuoteCard sample={samples[(index + 1) % samples.length]} position="middle" format={format} />
       <QuoteCard sample={current} position="front" format={format} text={text} />
-      <div className="pp-approval-stamp"><Check size={13} /> APPROVED WITH CONSENT</div>
+      <motion.div className="pp-approval-stamp" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ type: "spring", stiffness: 420, damping: 18 }}><Check size={13} /> APPROVED WITH CONSENT</motion.div>
     </div>
     <div className="pp-format-controls" aria-label="Preview format"><span>Format</span>{(["4:5", "1:1", "9:16"] as Format[]).map((item) => <button key={item} className={format === item ? "active" : ""} type="button" onClick={(event) => { event.stopPropagation(); setFormat(item); }}>{item}</button>)}</div>
     <label className="pp-live-type"><span className="sr-only">Type something kind about your work</span><MessageCircle size={16} /><input maxLength={90} value={text} onChange={(event) => setText(event.target.value)} placeholder="Type something kind about your work..." /><span>{text.length}/90</span></label>
