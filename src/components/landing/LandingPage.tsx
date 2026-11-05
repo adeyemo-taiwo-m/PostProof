@@ -31,9 +31,10 @@ type Format = "4:5" | "1:1" | "9:16";
 type Template = "Minimal" | "Bold" | "Editorial";
 
 const samples = [
+  { brand: "Common Ground", quote: "The first time our story looked like our work.", person: "Lena K.", template: "Bold", tone: "ink" },
   { brand: "Moonwell", quote: "The kind of care you feel the difference in.", person: "Maya R.", template: "Bold", tone: "coral" },
-  { brand: "Northstar", quote: "They made the complicated feel completely clear.", person: "Jon B.", template: "Minimal", tone: "ink" },
-  { brand: "Common Ground", quote: "The first time our story looked like our work.", person: "Lena K.", template: "Editorial", tone: "paper" },
+  { brand: "Northstar", quote: "They made the complicated feel completely clear.", person: "Jon B.", template: "Editorial", tone: "editorial" },
+  { brand: "Bright Studio", quote: "A thoughtful process from the first call to the last.", person: "Ari P.", template: "Minimal", tone: "paper" },
 ] as const;
 
 const loopSteps = [
@@ -63,13 +64,16 @@ function Wordmark({ footer = false }: { footer?: boolean }) {
   return <Link className={`pp-wordmark ${footer ? "pp-wordmark-footer" : ""}`} href="/" aria-label="Postproof home"><span className="pp-wordmark-mark">“</span><span>Postproof</span></Link>;
 }
 
-function QuoteCard({ sample, position, format, text }: { sample: (typeof samples)[number]; position: "front" | "middle" | "back"; format: Format; text?: string }) {
+type CardPosition = "front" | "middle" | "back" | "reserve";
+type CardEvents = { onClick?: () => void; onPointerEnter?: () => void; onPointerMove?: (event: React.PointerEvent<HTMLElement>) => void; onPointerLeave?: () => void; onPointerDown?: () => void; onPointerUp?: () => void; onPointerCancel?: () => void; cardRef?: React.RefObject<HTMLElement | null> };
+
+function QuoteCard({ sample, position, format, text, events }: { sample: (typeof samples)[number]; position: CardPosition; format: Format; text?: string; events?: CardEvents }) {
   const cardText = position === "front" && text ? text : sample.quote;
-  return <motion.article className={`pp-quote-card pp-card-${position} pp-card-${sample.tone} pp-format-${format.replace(":", "-")}`} aria-label={`${sample.template} sample graphic from ${sample.brand}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .18 }}>
-    <div className="pp-card-head"><span className="pp-card-mark">“</span><span>{sample.brand.toUpperCase()}</span><span className="pp-card-sample">SAMPLE</span></div>
-    <div className="pp-card-template">{sample.template}</div>
-    <div className="pp-card-quote">“{cardText}”</div>
-    <div className="pp-card-foot"><span>— {position === "front" && text ? "You" : sample.person}</span><span className="pp-card-rule" /></div>
+  return <motion.article ref={events?.cardRef} className={`pp-quote-card pp-card-${position} pp-card-${sample.tone} pp-format-${format.replace(":", "-")}`} data-cursor={position === "front" ? "Try me" : position === "reserve" ? "Print" : "Bring forward"} aria-label={`${sample.template} sample graphic from ${sample.brand}`} onClick={(event) => { event.stopPropagation(); events?.onClick?.(); }} onPointerEnter={events?.onPointerEnter} onPointerMove={events?.onPointerMove} onPointerLeave={events?.onPointerLeave} onPointerDown={events?.onPointerDown} onPointerUp={events?.onPointerUp} onPointerCancel={events?.onPointerCancel} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .18 }}>
+    <div className="pp-card-head" data-card-layer="chrome"><span className="pp-card-mark">“</span><span>{sample.brand.toUpperCase()}</span><span className="pp-card-sample" data-card-layer="sample">SAMPLE</span></div>
+    <div className="pp-card-template" data-card-layer="chrome">{sample.template.toUpperCase()}</div>
+    <div className="pp-card-quote" data-card-layer="quote">“{cardText}”</div>
+    <div className="pp-card-foot" data-card-layer="signature"><span>— {position === "front" && text ? "You" : sample.person}</span><span className="pp-card-rule" /></div>
   </motion.article>;
 }
 
@@ -77,23 +81,51 @@ function HeroStack({ paused }: { paused: boolean }) {
   const [index, setIndex] = useState(0);
   const [format, setFormat] = useState<Format>("4:5");
   const [text, setText] = useState("");
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  const [typingPulse, setTypingPulse] = useState(false);
+  const [announcement, setAnnouncement] = useState("");
+  const [stampKey, setStampKey] = useState(0);
   const touchStart = useRef<number | null>(null);
+  const touchActive = useRef(false);
+  const frontRef = useRef<HTMLElement | null>(null);
+  const frame = useRef<number | null>(null);
+  const announcementTimer = useRef<number | null>(null);
+  const typingTimer = useRef<number | null>(null);
   const current = samples[index];
-  function shuffle() { setIndex((value) => (value + 1) % samples.length); }
+  function announce(message: string) { if (announcementTimer.current) window.clearTimeout(announcementTimer.current); setAnnouncement(message); announcementTimer.current = window.setTimeout(() => setAnnouncement(""), 900); }
+  function updateCard(nextIndex: number) { setIndex(nextIndex); setStampKey((value) => value + 1); announce("Card updated"); }
+  function shuffle() { updateCard((index + 1) % samples.length); }
+  function promote(offset: number) { updateCard((index + offset) % samples.length); }
+  function printCard() { if (isPrinting) return; setIsPrinting(true); window.setTimeout(() => { setIndex((value) => (value + 1) % samples.length); setStampKey((value) => value + 1); setIsPrinting(false); announce("Fresh card printed"); }, 420); }
+  function setTilt(event: React.PointerEvent<HTMLElement>) {
+    if (paused || !frontRef.current) return;
+    const rect = frontRef.current.getBoundingClientRect();
+    const x = Math.max(-1, Math.min(1, (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2)));
+    const y = Math.max(-1, Math.min(1, (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2)));
+    if (frame.current) cancelAnimationFrame(frame.current);
+    frame.current = requestAnimationFrame(() => { frontRef.current?.style.setProperty("--tilt-x", `${x}`); frontRef.current?.style.setProperty("--tilt-y", `${y}`); frontRef.current?.style.setProperty("--glare-x", `${50 + x * 42}%`); frontRef.current?.style.setProperty("--glare-y", `${50 + y * 42}%`); });
+  }
+  function clearTilt() { if (frame.current) cancelAnimationFrame(frame.current); frontRef.current?.style.setProperty("--tilt-x", "0"); frontRef.current?.style.setProperty("--tilt-y", "0"); frontRef.current?.style.setProperty("--glare-x", "50%"); frontRef.current?.style.setProperty("--glare-y", "50%"); }
+  function onType(value: string) { setText(value); setTypingPulse(true); announce("Card updated"); if (typingTimer.current) window.clearTimeout(typingTimer.current); typingTimer.current = window.setTimeout(() => setTypingPulse(false), 120); }
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) { if (event.key === " " || event.key === "Enter") { event.preventDefault(); shuffle(); } }
+  useEffect(() => () => { if (frame.current) cancelAnimationFrame(frame.current); if (announcementTimer.current) window.clearTimeout(announcementTimer.current); if (typingTimer.current) window.clearTimeout(typingTimer.current); }, []);
   return <div className={`pp-hero-demo ${paused ? "pp-demo-paused" : ""}`} data-cursor="Try me">
     <div className="pp-orbit pp-orbit-one" aria-hidden="true" /><div className="pp-orbit pp-orbit-two" aria-hidden="true" /><span className="pp-orbit-dot" aria-hidden="true" />
     <div className="pp-hero-sticker">NEW · YOUR WORDS, BETTER PRESENTED</div>
-    <div className="pp-stack" tabIndex={0} role="button" aria-label="Shuffle sample testimonial cards. Press Space or Enter" onClick={shuffle} onKeyDown={onKeyDown} onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }} onTouchEnd={(event) => { const end = event.changedTouches[0]?.clientX ?? 0; if (touchStart.current !== null && Math.abs(end - touchStart.current) > 35) shuffle(); touchStart.current = null; }}>
-      <QuoteCard sample={samples[(index + 2) % samples.length]} position="back" format={format} />
-      <QuoteCard sample={samples[(index + 1) % samples.length]} position="middle" format={format} />
-      <QuoteCard sample={current} position="front" format={format} text={text} />
-      <motion.div className="pp-approval-stamp" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ type: "spring", stiffness: 420, damping: 18 }}><Check size={13} /> APPROVED WITH CONSENT</motion.div>
+    <div className={`pp-stack-area pp-area-${format.replace(":", "-")}`}>
+      <div className={`pp-stack ${isHovered ? "is-hovered" : ""} ${isPressed ? "is-pressed" : ""} ${isPrinting ? "is-printing" : ""} ${typingPulse ? "is-typing" : ""}`} tabIndex={0} role="button" aria-label="Sample testimonial cards" onKeyDown={onKeyDown} onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }} onTouchEnd={(event) => { const end = event.changedTouches[0]?.clientX ?? 0; const swiped = touchStart.current !== null && Math.abs(end - touchStart.current) > 60; const touchedCard = (event.target as HTMLElement).closest(".pp-quote-card"); if (swiped || !touchedCard) { shuffle(); touchActive.current = swiped; if (swiped) window.setTimeout(() => { touchActive.current = false; }, 400); } touchStart.current = null; }}>
+        <QuoteCard sample={samples[(index + 3) % samples.length]} position="reserve" format={format} events={{ onClick: () => { if (!touchActive.current) promote(3); } }} />
+        <QuoteCard sample={samples[(index + 2) % samples.length]} position="back" format={format} events={{ onClick: () => { if (!touchActive.current) promote(2); } }} />
+        <QuoteCard sample={samples[(index + 1) % samples.length]} position="middle" format={format} events={{ onClick: () => { if (!touchActive.current) promote(1); } }} />
+        <QuoteCard sample={current} position="front" format={format} text={text} events={{ cardRef: frontRef, onClick: () => { if (!touchActive.current) shuffle(); }, onPointerEnter: () => setIsHovered(true), onPointerMove: setTilt, onPointerLeave: () => { setIsHovered(false); setIsPressed(false); clearTilt(); }, onPointerDown: () => setIsPressed(true), onPointerUp: () => setIsPressed(false), onPointerCancel: () => setIsPressed(false) }} />
+        <motion.div key={`${stampKey}-${current.brand}`} className={`pp-approval-stamp pp-stamp-${current.tone}`} initial={{ opacity: 0, scale: 2.2, rotate: -22 }} animate={{ opacity: 1, scale: 1, rotate: -12 }} transition={{ type: "spring", stiffness: 420, damping: 18 }}><Check size={13} /> APPROVED WITH CONSENT</motion.div>
+      </div>
+      <div className="pp-press-slot" aria-hidden="true" />
+      <button className="pp-shuffle" type="button" onClick={shuffle} aria-label="Shuffle cards" title="Shuffle cards"><Quote size={17} /></button>
     </div>
-    <div className="pp-format-controls" aria-label="Preview format"><span>Format</span>{(["4:5", "1:1", "9:16"] as Format[]).map((item) => <button key={item} className={format === item ? "active" : ""} type="button" onClick={(event) => { event.stopPropagation(); setFormat(item); }}>{item}</button>)}</div>
-    <label className="pp-live-type"><span className="sr-only">Type something kind about your work</span><MessageCircle size={16} /><input maxLength={90} value={text} onChange={(event) => setText(event.target.value)} placeholder="Type something kind about your work..." /><span>{text.length}/90</span></label>
-    <p className="pp-demo-caption">Just a preview. Nothing is sent.</p>
-    <button className="pp-shuffle" type="button" onClick={shuffle} aria-label="Shuffle testimonial card"><Quote size={17} /></button>
+    <div className="pp-hero-controls"><div className="pp-format-controls" aria-label="Preview format"><span>Format</span>{(["4:5", "1:1", "9:16"] as Format[]).map((item) => <button key={item} className={format === item ? "active" : ""} type="button" onClick={() => setFormat(item)}>{item}</button>)}</div><label className={`pp-live-type ${text.length > 80 ? "is-warning" : ""}`}><span className="sr-only">Type something kind about your work</span><MessageCircle size={16} /><input maxLength={90} value={text} onChange={(event) => onType(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); printCard(); } }} placeholder="Type something kind about your work..." /><span>{text.length}/90</span><button type="button" onClick={printCard} aria-label="Print a fresh testimonial card"><ArrowUpRight size={16} /></button></label><p className="pp-demo-caption">Just a preview. Nothing is sent.</p><span className="sr-only" aria-live="polite">{announcement}</span></div>
   </div>;
 }
 
@@ -169,8 +201,6 @@ export default function LandingPage() {
     {menuOpen && <div className="pp-mobile-sheet"><button className="pp-sheet-close" type="button" onClick={() => setMenuOpen(false)} aria-label="Close menu"><X size={22} /></button><Wordmark /><div><a href="#the-loop" onClick={() => setMenuOpen(false)}>How it works</a><a href="#why-postproof" onClick={() => setMenuOpen(false)}>Why Postproof</a><Link href="/login">Log in</Link><Link className="pp-button pp-button-coral" href="/signup">Start free <ArrowUpRight size={16} /></Link></div></div>}
 
     <section className="pp-hero pp-section" data-section="hero"><div className="pp-coral-wash" /><div className="pp-container pp-hero-grid"><div className="pp-hero-copy"><span className="pp-sticker"><i /> PROOF WORTH POSTING</span><h1>Turn customer love into <em>proof worth posting.</em></h1><p>Collect customer reviews with one link. Approve the ones you love. Download them as branded, ready-to-post graphics.</p><div className="pp-hero-actions"><Link className="pp-button pp-button-coral pp-button-large" href="/signup">Create your link <ArrowUpRight size={18} /></Link><a className="pp-text-link" href="#the-loop">See how it works <ArrowDown size={16} /></a></div><span className="pp-assurance"><ShieldCheck size={16} /> Real words only · Consent is always your call</span></div><HeroStack paused={paused} /></div></section>
-
-    <section className="pp-brand-band" aria-label="Example brands"><div className="pp-container pp-brand-band-inner"><span className="pp-band-label">Made for people who do good work <small>Example brands, not customers.</small></span><button className="pp-pause-button" type="button" onClick={() => setPaused(!paused)}>{paused ? <CirclePlay size={15} /> : <CirclePause size={15} />}{paused ? "Play" : "Pause"}</button><div className="pp-marquee" aria-label="Example brands"><span>“</span><b>moonwell</b><span>“</span><b className="pp-brand-serif">northstar</b><span>“</span><b>common ground</b><span>“</span><b>STUDIO / 24</b><span>“</span><b>good company</b></div></div></section>
 
     <section className={`pp-loop pp-section pp-loop-step-${loopStep + 1}`} id="the-loop" data-section="loop"><div className="pp-container"><div className="pp-section-intro"><div><span className="pp-overline">THE SIMPLE LOOP</span><h2>Less admin.<br /><em>More proof.</em></h2></div><div><p>Great work creates great stories. Postproof gives those stories a place to land—and gives you a graceful way to put them back into the world.</p><a className="pp-text-link" href="#link-claim">Build your collection link <ArrowUpRight size={16} /></a></div></div><div className="pp-loop-grid"><div className="pp-step-list" role="tablist" aria-label="How Postproof works">{loopSteps.map((item, index) => <button key={item.title} className={loopStep === index ? "active" : ""} type="button" role="tab" aria-selected={loopStep === index} onClick={() => setLoopStep(index)}><span className="pp-step-number">0{index + 1}</span><span><b>{item.title}</b><small>{item.copy}</small></span><ChevronRight size={18} /></button>)}</div><LoopDemo key={loopStep} step={loopStep} paused={paused} /></div></div></section>
 
