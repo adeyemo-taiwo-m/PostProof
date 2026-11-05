@@ -500,6 +500,7 @@ const SpecularButton = React.forwardRef<HTMLElement, SpecularButtonProps>(functi
     "--sb-background": tintWithOpacity(tint, tintOpacity),
     "--sb-blur": `${blur}px`,
     "--sb-text-color": textColor,
+    background: sharedButton ? tintWithOpacity(tint, tintOpacity) : undefined,
     ...style,
   } as CSSProperties;
 
