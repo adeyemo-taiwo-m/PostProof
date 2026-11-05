@@ -149,3 +149,8 @@
 .pp-live-type.curved-input { display: block; min-height: 0; margin-top: 44px; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .pp-live-type.curved-input:focus-within { border-color: transparent; }
 .pp-live-type.curved-input .curved-input__field { min-width: 0; flex: none; border: 0; padding: 0; }
+.pp-hero { isolation: isolate; }
+.pp-hero-veil.dark-veil-container { position: absolute; z-index: 0; inset: 0; width: auto; height: auto; pointer-events: none; opacity: .28; }
+.pp-hero-veil .dark-veil-canvas { pointer-events: none; }
+.pp-hero .pp-coral-wash { z-index: 1; opacity: .6; }
+.pp-hero .pp-hero-grid { z-index: 2; }
