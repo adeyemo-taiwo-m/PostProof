@@ -135,3 +135,6 @@
 
 .pp-hero-copy h1 em { color: var(--primary); }
 .pp-hero-copy h1 em::after { display: none; }
+.pp-hero-typed { min-width: 18ch; color: inherit; white-space: nowrap; }
+.pp-hero-warp.warp-text { width: 100%; min-height: 1em; height: 1em; overflow: visible; vertical-align: baseline; }
+.pp-hero-warp.warp-text { margin: 0; padding: 0; text-align: left; text-indent: 0; }
