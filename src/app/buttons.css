@@ -61,9 +61,9 @@
 .ui-button-outline-inverse:hover { background: var(--ink-2); }
 .ui-button-brand { color: var(--brand-fg, var(--ink)); background: var(--brand-bg, var(--coral)); box-shadow: var(--shadow-sm); }
 .ui-button-brand:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
-.ui-button-flood { color: var(--paper); background: var(--ink); box-shadow: var(--shadow-sm); }
-.ui-button-flood::before { position: absolute; inset: 0; content: ""; background: var(--coral-500); clip-path: circle(0% at var(--button-x, 50%) var(--button-y, 50%)); transition: clip-path .42s var(--pp-ease); }
-.ui-button-flood:hover { color: var(--ink); transform: none; }
+.ui-button-flood { color: var(--paper); background: var(--coral-500); box-shadow: var(--shadow-sm); }
+.ui-button-flood::before { position: absolute; inset: 0; content: ""; background: var(--ink); clip-path: circle(0% at var(--button-x, 50%) var(--button-y, 50%)); transition: clip-path .42s var(--pp-ease); }
+.ui-button-flood:hover { color: var(--paper); transform: none; }
 .pp-hero-actions .ui-button-flood:hover { color: var(--paper); }
 .pp-hero-actions .ui-button-flood:hover > svg { color: var(--paper); }
 .ui-button-flood:hover::before { clip-path: circle(150% at var(--button-x, 50%) var(--button-y, 50%)); }
