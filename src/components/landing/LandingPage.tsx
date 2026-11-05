@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { Button, MagneticButton } from "@/components/ui";
 import ProofText from "@/components/ProofText";
+import CurvedInput from "@/components/CurvedInput";
 import WarpText from "@/components/WarpText";
 
 type Format = "4:5" | "1:1" | "9:16";
@@ -130,7 +131,7 @@ function HeroStack({ paused }: { paused: boolean }) {
       </div>
       <button className="pp-shuffle" type="button" onClick={shuffle} aria-label="Shuffle cards" title="Shuffle cards"><Quote size={17} /></button>
     </div>
-    <div className="pp-hero-controls"><label className={`pp-live-type ${text.length > 80 ? "is-warning" : ""}`}><span className="sr-only">Type something kind about your work</span><MessageCircle size={16} /><input maxLength={90} value={text} onFocus={() => setInputFocused(true)} onBlur={() => setInputFocused(false)} onChange={(event) => onType(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); printCard(); } }} placeholder="Type something kind about your work..." /><span>{text.length}/90</span><button type="button" onClick={printCard} aria-label="Print a fresh testimonial card"><ArrowUpRight size={16} /></button></label><span className="sr-only" aria-live="polite">{announcement}</span></div>
+    <div className="pp-hero-controls"><CurvedInput className={`pp-live-type ${text.length > 80 ? "is-warning" : ""}`} value={text} maxLength={90} onChange={onType} onSubmit={printCard} onFocus={() => setInputFocused(true)} onBlur={() => setInputFocused(false)} placeholder="Type something kind about your work..." ariaLabel="Type something kind about your work" buttonText="Print card" type="text" theme="light" width="min(90%, 560px)" bend={8} height={64} cornerRadius={28} fontSize={14} backgroundColor="#FAF7F2" textColor="#14110F" placeholderColor="#8C847A" borderColor="#8C847A" buttonColor="#F2542D" buttonTextColor="#FFFFFF" iconColor="#F2542D" shadowSize="sm" /><span className="sr-only" aria-live="polite">{announcement}</span></div>
   </div>;
 }
 
