@@ -50,6 +50,45 @@ vec4 cppn(vec2 coordinate, vec3 latent) {
   buf[0]=mat4(vec4(1.6794263,1.3817469,2.9625452,0.),vec4(-1.8834411,-1.4806935,-3.5924516,0.),vec4(-1.3279216,-1.0918057,-2.3124623,0.),vec4(0.2662234,0.23235129,0.44178495,0.))*buf[0]+mat4(vec4(-0.6299101,-0.5945583,-0.9125601,0.),vec4(0.17828953,0.18300213,0.18182953,0.),vec4(-2.96544,-2.5819945,-4.9001055,0.),vec4(1.4195864,1.1868085,2.5176322,0.))*buf[1]+mat4(vec4(-1.2584374,-1.0552157,-2.1688404,0.),vec4(-0.7200217,-0.52666044,-1.438251,0.),vec4(0.15345335,0.1519616,0.272854,0.),vec4(0.945728,0.8861938,1.2766753,0.))*buf[2]+mat4(vec4(-2.4218085,-1.968602,-4.35166,0.),vec4(-22.683098,-18.0544,-41.954372,0.),vec4(0.63792,0.5470648,1.1078634,0.),vec4(-1.5489894,-1.3075932,-2.6444845,0.))*buf[3]+mat4(vec4(-0.49252132,-0.39877754,-0.91366625,0.),vec4(0.95609266,0.7923952,1.640221,0.),vec4(0.30616966,0.15693925,0.8639857,0.),vec4(1.1825981,0.94504964,2.176963,0.))*buf[4]+mat4(vec4(0.35446745,0.3293795,0.59547555,0.),vec4(-0.58784515,-0.48177817,-1.0614829,0.),vec4(2.5271258,1.9991652,4.6846647,0.),vec4(0.13042648,0.08864098,0.30187556,0.))*buf[5]+mat4(vec4(-1.7718065,-1.4033192,-3.3355875,0.),vec4(3.1664357,2.638297,5.378702,0.),vec4(-3.1724713,-2.6107926,-5.549295,0.),vec4(-2.851368,-2.249092,-5.3013067,0.))*buf[6]+mat4(vec4(1.5203838,1.2212278,2.8404984,0.),vec4(1.5210563,1.2651345,2.683903,0.),vec4(2.9789467,2.4364579,5.2347264,0.),vec4(2.2270417,1.8825914,3.8028636,0.))*buf[7]+vec4(-1.5468478,-3.6171484,0.24762098,0.);
   buf[0]=sigmoid(buf[0]);
   return vec4(buf[0].x,buf[0].y,buf[0].z,1.);
+}
+
+float hash(vec2 p) {
+  p = fract(p * vec2(123.34, 456.21));
+  p += dot(p, p + 45.32);
+  return fract(p.x * p.y);
+}
+
+mat2 rotate(float a) {
+  float c = cos(a);
+  float s = sin(a);
+  return mat2(c, s, -s, c);
+}
+
+void main() {
+  vec2 css = gl_FragCoord.xy * uScale;
+  vec2 uv = (css * 2.0 - uView) / uView.y;
+  uv.y = -uv.y;
+  vec2 anchor = vec2(uView.x / uView.y, -1.0);
+
+  vec2 pointer = vec2(uPointer.x * 2.0 - uView.x, uPointer.y * 2.0 - uView.y) / uView.y;
+  vec2 offset = uv - pointer;
+  float touch = uPointer.z * exp(-dot(offset, offset) / (uPointer.w * uPointer.w));
+  uv = pointer + rotate(touch * 0.6) * offset;
+  uv -= uDrag * touch;
+
+  float t = uTime;
+  uv = rotate(0.06 * uFlow * sin(t * 0.17)) * uv;
+  uv += 0.05 * uFlow * vec2(sin(t * 0.21), cos(t * 0.13));
+  uv = anchor + mat2(uTurn.x, uTurn.y, -uTurn.y, uTurn.x) * uv * 2.0 / uZoom;
+  uv += uWarp * vec2(sin(uv.y * 6.283 + t * 0.5), cos(uv.x * 6.283 + t * 0.5)) * 0.05;
+
+  vec3 latent = uSeed + 0.1 * uFlow * vec3(sin(0.3 * t), sin(0.69 * t), sin(0.44 * t));
+  latent += touch * vec3(0.12, -0.1, 0.16);
+  latent.z += uUnfold;
+
+  vec3 veil = cppn(uv, latent).rgb;
+  veil += (hash(gl_FragCoord.xy) - 0.5) * uDither;
+  outColor = vec4(veil, 1.0);
 }`;
 
 const COMPOSITE = `#version 300 es
@@ -172,6 +211,7 @@ const link = (gl: WebGL2RenderingContext, fragmentSource: string) => {
   gl.deleteShader(vertex);
   gl.deleteShader(fragment);
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error("[DarkVeil] Program link failed", gl.getProgramInfoLog(program));
     gl.deleteProgram(program);
     return null;
   }
@@ -288,25 +328,18 @@ const DarkVeil = ({
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
-    const texture = gl.createTexture();
+    let texture = gl.createTexture();
     const framebuffer = gl.createFramebuffer();
     const target = { width: 0, height: 0 };
     const sizeTarget = (width: number, height: number) => {
       if (target.width === width && target.height === height) return;
       target.width = width;
       target.height = height;
+      gl.deleteTexture(texture);
+      texture = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(
-        gl.TEXTURE_2D,
-        0,
-        floatTargets ? gl.RGBA16F : gl.RGBA8,
-        width,
-        height,
-        0,
-        gl.RGBA,
-        floatTargets ? gl.FLOAT : gl.UNSIGNED_BYTE,
-        null
-      );
+      const levels = Math.floor(Math.log2(Math.max(width, height))) + 1;
+      gl.texStorage2D(gl.TEXTURE_2D, levels, floatTargets ? gl.RGBA16F : gl.RGBA8, width, height);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -540,7 +573,6 @@ const DarkVeil = ({
       gl.deleteProgram(compositeProgram.program);
       gl.deleteBuffer(buffer);
       gl.deleteVertexArray(vao);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, []);
 

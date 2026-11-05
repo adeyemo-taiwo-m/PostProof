@@ -150,7 +150,8 @@
 .pp-live-type.curved-input:focus-within { border-color: transparent; }
 .pp-live-type.curved-input .curved-input__field { min-width: 0; flex: none; border: 0; padding: 0; }
 .pp-hero { isolation: isolate; }
-.pp-hero-veil.dark-veil-container { position: absolute; z-index: 0; inset: 0; width: auto; height: auto; pointer-events: none; opacity: .28; }
+.pp-hero-veil.dark-veil-container { position: absolute; z-index: 0; inset: 0; width: auto; height: auto; pointer-events: none; opacity: .62; background: radial-gradient(circle at 55% 42%, rgb(246 182 164 / .18), transparent 54%), linear-gradient(135deg, rgb(255 239 233 / .2), transparent 68%); }
 .pp-hero-veil .dark-veil-canvas { pointer-events: none; }
-.pp-hero .pp-coral-wash { z-index: 1; opacity: .6; }
+.pp-hero .pp-coral-wash { z-index: 1; opacity: .45; }
 .pp-hero .pp-hero-grid { z-index: 2; }
+.pp-shuffle { border-color: var(--primary); color: var(--primary); }
