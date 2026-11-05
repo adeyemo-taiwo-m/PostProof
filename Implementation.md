@@ -1,6 +1,6 @@
 <div align="center">
 
-# ProofCard
+# Postproof
 
 ### Turn customer love into beautiful social proof.
 
@@ -44,11 +44,11 @@ Collect testimonials with one link. Approve the ones you love. Download them as 
 
 ## 1. Overview
 
-ProofCard is a focused SaaS for small businesses, freelancers, agencies and service providers who know social proof matters but hate the process of getting it.
+Postproof is a focused SaaS for small businesses, freelancers, agencies and service providers who know social proof matters but hate the process of getting it.
 
 Today, testimonials are scattered across WhatsApp chats, Instagram DMs and emails. Owners screenshot messages that look inconsistent, or pay a designer to turn each one into a post. Customers forget to reply. Nothing is organised.
 
-ProofCard replaces all of that with one flow:
+Postproof replaces all of that with one flow:
 
 | Step | What happens |
 |---|---|
@@ -682,7 +682,7 @@ AI-assisted categorisation and caption suggestions, public testimonial pages, em
 
 ## 18. Instructions for the Coding Agent
 
-You are implementing ProofCard from this document. Follow these rules throughout.
+You are implementing Postproof from this document. Follow these rules throughout.
 
 1. Read this entire README before writing code, then **inspect the existing repo** and don't overwrite working configuration.
 2. Follow the phases in order. Complete and verify each before moving on.

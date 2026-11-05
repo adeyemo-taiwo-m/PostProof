@@ -1,6 +1,6 @@
 <div align="center">
 
-# ProofCard Style Guide
+# Postproof Style Guide
 
 ### The design system for every pixel: color, type, shadow, motion and every UI element.
 
@@ -9,7 +9,7 @@
 
 </div>
 
-> **How to use this document.** This is the single source of truth for the ProofCard UI. The coding agent must use the tokens and component specs here instead of inventing values. If something is missing, extend this guide first, then build. Pair it with [README.md](./README.md), which defines *what* to build. This file defines *how it looks and behaves*.
+> **How to use this document.** This is the single source of truth for the Postproof UI. The coding agent must use the tokens and component specs here instead of inventing values. If something is missing, extend this guide first, then build. Pair it with [README.md](./README.md), which defines *what* to build. This file defines *how it looks and behaves*.
 
 ---
 
@@ -53,14 +53,14 @@
 
 ## 2. Brand and Voice
 
-**Name:** ProofCard (one word, capital P and C).
+**Name:** Postproof (one word, capital P, lowercase "proof").
 **Tagline:** *Proof worth posting.*
 **Descriptor:** Collect customer reviews with one link. Post them as branded graphics.
 
 **Voice:** friendly, plain, confident. Short sentences. Talk like a helpful friend who knows social media, not like enterprise software.
 
 **Logo and wordmark (until a custom logo exists):**
-- Set "ProofCard" in Bricolage Grotesque Bold, tracking `-0.02em`.
+- Set "Postproof" in Bricolage Grotesque Bold, tracking `-0.02em`.
 - Mark: a rounded-square (radius 8px) in Coral 500 containing a quotation mark glyph in Ink.
 - Minimum clear space around the logo: the height of the quote glyph.
 - Use the wordmark in Ink on light backgrounds and in Paper on Ink backgrounds. On Coral 500 backgrounds use Ink.
@@ -178,15 +178,15 @@ Two separate color systems exist. **Do not mix them.**
 
 | System | Where it applies | Source |
 |---|---|---|
-| **ProofCard colors** (this guide) | The entire dashboard, auth, landing page, settings UI | Tokens above |
+| **Postproof colors** (this guide) | The entire dashboard, auth, landing page, settings UI | Tokens above |
 | **Business brand colors** (user's primary, secondary, accent) | The public submission page accents and the generated graphics | Database |
 
 **Public submission page rules**
-- Base UI (background, text, inputs) stays ProofCard neutral.
+- Base UI (background, text, inputs) stays Postproof neutral.
 - The business's primary color is used for: the submit button fill, a thin top bar and the logo tile.
 - Text on the business's primary color is chosen automatically (see [12.2](#122-automatic-text-color)).
 - The focus ring uses the business primary **only if** it has at least 3:1 contrast against the page background. Otherwise use Ink.
-- Optional footer: "Powered by ProofCard" as a small text link in `muted`.
+- Optional footer: "Powered by Postproof" as a small text link in `muted`.
 
 ### 3.7 Default brand colors for new businesses
 
@@ -599,7 +599,7 @@ One control per color: Primary (required), Secondary, Accent.
 | Swatch button | 44px square, `radius-md`, color fill, 1px inner border `rgba(20,17,15,0.2)` so white and pale colors stay visible |
 | Hex field | Mono text input, 96px wide, uppercase, validates `#RRGGBB` (also accept 3-digit and expand) |
 | Native picker | A visually hidden `<input type="color">` opened by the swatch |
-| Presets | A row of 8 suggested colors (36px circles) including the ProofCard defaults |
+| Presets | A row of 8 suggested colors (36px circles) including the Postproof defaults |
 | Contrast hint | Live chip beside the control: a small tile in the chosen color with the sample word "Aa" in the auto-selected text color, and text such as "Text on this color: Dark" |
 | Error | "Enter a valid color, like #F2542D" |
 
@@ -745,7 +745,7 @@ Panel: `surface`, `radius-lg`, 1px `border-subtle`, `shadow-md`, padding 4px, mi
 
 **Top header (`DashboardHeader`)**
 - 64px, `paper`. Left: page title (`h2`, on mobile `h3`) and optional breadcrumb or back link. Right: contextual actions and the account menu (avatar button, 40px).
-- Below lg the header also shows the ProofCard logo mark on the left.
+- Below lg the header also shows the Postproof logo mark on the left.
 
 **Back link:** `ArrowLeft` 16px plus "Testimonials", `label`, `muted`, hover `ink`. Placed above the page title on detail pages.
 
@@ -823,7 +823,7 @@ Required copy: **Testimonials list:** "No testimonials yet." / "Share your uniqu
 | States | Idle, Submitting (button loading, fields read-only), Success, Validation error (inline, focus moves to the first invalid field), Network error (Error alert above the button with Retry), Rate limited (Warning alert: "You've submitted a few times in a row. Please try again in a bit.") |
 | Honeypot | A visually hidden, `tabindex="-1"`, `aria-hidden` field, positioned off-screen (never `display:none`) |
 | Success | Replaces the form with a centered block: 64px circle (`success` tint) with a check, "Thank you for sharing your experience!" (`h1`), "Your feedback has been sent to the business." (`body-lg`, `muted`). No reload. |
-| Footer | Optional "Powered by ProofCard" text link, `caption`, `muted` |
+| Footer | Optional "Powered by Postproof" text link, `caption`, `muted` |
 
 Mobile-first: single column, side padding 16px, inputs 48px tall, the submit button reachable without scrolling past the keyboard (use `scroll-margin` and avoid fixed bottom bars that collide with the keyboard).
 
@@ -857,7 +857,7 @@ Section vertical spacing: 96px desktop, 64px mobile. Keep the page simple. It is
 
 ### 10.30 Error and Not-Found Pages
 
-- **Public not-found (invalid slug):** centered, a 56px `coral-100` icon circle, `h1` "We couldn't find that page.", `body` `muted` "The link may be wrong or no longer active.", an Outline button "Go to ProofCard".
+- **Public not-found (invalid slug):** centered, a 56px `coral-100` icon circle, `h1` "We couldn't find that page.", `body` `muted` "The link may be wrong or no longer active.", an Outline button "Go to Postproof".
 - **Dashboard error boundary:** Error alert plus a Retry button. Never show raw error text.
 - **Forbidden or not found for owner resources:** same pattern with a "Back to testimonials" button.
 
@@ -1139,7 +1139,7 @@ Variable names follow shadcn/ui conventions so its components pick up the theme 
   --ring: #C93A14;
   --radius: 0.625rem;                   /* 10px: radius-md */
 
-  /* ProofCard extended tokens */
+  /* Postproof extended tokens */
   --coral-50: #FFF3EE;  --coral-100: #FFE8DF; --coral-200: #FFD0BE;
   --coral-300: #FF8A68; --coral-400: #FF6B47; --coral-500: #F2542D;
   --coral-600: #C93A14; --coral-700: #B02F0B; --coral-800: #8A2409; --coral-900: #5C1806;

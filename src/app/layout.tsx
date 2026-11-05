@@ -8,7 +8,7 @@ const sans = DM_Sans({ subsets: ["latin"], variable: "--font-sans", display: "sw
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "ProofCard — Beautiful social proof, simply",
+  title: "Postproof — Proof worth posting",
   description: "Collect testimonials with one link and turn the best words into branded, ready-to-post graphics.",
 };
 

@@ -1,6 +1,6 @@
-# ProofCard
+# Postproof
 
-ProofCard turns real customer feedback into polished, branded social proof.
+Postproof turns real customer feedback into polished, branded social proof.
 
 ## Getting started
 
