@@ -135,6 +135,9 @@ export default function TextType({
   const blinkResume = useRef<gsap.core.Tween | null>(null);
   const caretPosition = useRef<{ x: number; y: number } | null>(null);
   const placeCursor = useRef<(instant: boolean) => void>(() => undefined);
+  const setContainerRef = useCallback((node: HTMLElement | null) => {
+    containerRef.current = node;
+  }, []);
   const lastTypo = useRef(-1);
   const onSentenceCompleteRef = useRef(onSentenceComplete);
 
@@ -345,7 +348,7 @@ export default function TextType({
   </>;
   const rootClassName = `text-type ${className}`;
 
-  if (Component === "span") return <span {...props} ref={containerRef} className={rootClassName}>{content}</span>;
-  if (Component === "div") return <div {...props} ref={containerRef} className={rootClassName}>{content}</div>;
+  if (Component === "span") return <span {...props} ref={setContainerRef} className={rootClassName}>{content}</span>;
+  if (Component === "div") return <div {...props} ref={setContainerRef} className={rootClassName}>{content}</div>;
   return <Component {...props} className={rootClassName}>{content}</Component>;
 }

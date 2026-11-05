@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { Mesh, Program, Renderer, Texture, Triangle, type OGLRenderingContext } from "ogl";
 
 const LENS_MODES = { bulge: 0, pinch: 1, swirl: 2 } as const;
@@ -220,6 +220,9 @@ export default function WarpText({
   fontWeight = 800, fontFamily = "inherit", letterSpacing = "-0.06em", lineHeight = 0.9, className = "", style,
 }: WarpTextProps) {
   const containerRef = useRef<HTMLElement | null>(null);
+  const setContainerRef = useCallback((node: HTMLElement | null) => {
+    containerRef.current = node;
+  }, []);
   const propsRef = useRef<WarpSettings>({ text, textAlign, fitWidth, fitHeight, color, fontSize, fontWeight, fontFamily, letterSpacing, lineHeight, warpStrength, warpScale, speed, pointerInfluence, pointerStrength, refraction, chromatic, ripple, clickRipple, idleDrift, lens, intro });
   const contextRef = useRef<WarpContext | null>(null);
   const [failed, setFailed] = useState(false);
@@ -301,6 +304,6 @@ export default function WarpText({
 
   const rootProps = { className: `warp-text ${className}`.trim(), style, role: "img" as const, "aria-label": text };
   const fallback = failed ? <span className="warp-text__fallback" aria-hidden="true" style={{ color, fontFamily, fontWeight, fontSize: getFontValue(fontSize), letterSpacing: getFontValue(letterSpacing), lineHeight }}>{text}</span> : null;
-  if (Component === "span") return <span ref={containerRef} {...rootProps}>{fallback}</span>;
-  return <div ref={containerRef} {...rootProps}>{fallback}</div>;
+  if (Component === "span") return <span ref={setContainerRef} {...rootProps}>{fallback}</span>;
+  return <div ref={setContainerRef} {...rootProps}>{fallback}</div>;
 }

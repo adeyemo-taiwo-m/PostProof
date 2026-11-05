@@ -136,5 +136,11 @@
 .pp-hero-copy h1 em { color: var(--primary); }
 .pp-hero-copy h1 em::after { display: none; }
 .pp-hero-typed { min-width: 18ch; color: inherit; white-space: nowrap; }
-.pp-hero-warp.warp-text { width: 100%; min-height: 1em; height: 1em; overflow: visible; vertical-align: baseline; }
+.pp-hero-warp.warp-text { width: 100%; min-height: 1.95em; height: 1.95em; overflow: visible; vertical-align: baseline; }
 .pp-hero-warp.warp-text { margin: 0; padding: 0; text-align: left; text-indent: 0; }
+.pp-wordmark-proof { color: var(--coral); }
+.pp-proof-text { color: var(--primary); font-family: Georgia, serif; font-size: .9em; font-style: italic; font-weight: 400; }
+.pp-proof-text-typed { color: inherit; white-space: nowrap; }
+.pp-wordmark-mark, .pp-button-coral, .pp-button-coral:hover, .pp-card-middle, .pp-quote-card.pp-card-coral, .pp-approval-stamp, .pp-copy-action, .pp-approve-small, .pp-phone-submit, .pp-review-approve, .pp-studio-sticker, .pp-url-pill, .pp-url-pill button, .pp-slider-handle, .pp-big-quote, .pp-before-after .pp-after-card { color: var(--paper); }
+.pp-card-mark { color: var(--paper); }
+.pp-card-middle .pp-card-template { color: var(--paper); }

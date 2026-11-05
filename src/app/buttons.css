@@ -64,6 +64,8 @@
 .ui-button-flood { color: var(--paper); background: var(--ink); box-shadow: var(--shadow-sm); }
 .ui-button-flood::before { position: absolute; inset: 0; content: ""; background: var(--coral-500); clip-path: circle(0% at var(--button-x, 50%) var(--button-y, 50%)); transition: clip-path .42s var(--pp-ease); }
 .ui-button-flood:hover { color: var(--ink); transform: none; }
+.pp-hero-actions .ui-button-flood:hover { color: var(--paper); }
+.pp-hero-actions .ui-button-flood:hover > svg { color: var(--paper); }
 .ui-button-flood:hover::before { clip-path: circle(150% at var(--button-x, 50%) var(--button-y, 50%)); }
 .ui-button-chip { border-color: var(--border-strong); color: var(--ink); background: var(--surface); }
 .ui-button-chip:hover { background: var(--surface-2); }
@@ -91,6 +93,7 @@
 .ui-button-stable-label > span { grid-area: 1 / 1; }
 .ui-button-stable-label .is-hidden { visibility: hidden; }
 .ui-magnetic-button { display: inline-flex; transition: transform .3s var(--pp-ease); }
+.pp-menu-button.ui-button { display: none; }
 .ui-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 @keyframes ui-button-spin { to { transform: rotate(360deg); } }
@@ -104,9 +107,12 @@
 
 @media (max-width: 639px) {
   .ui-button-mobile-full { width: 100%; }
+  .pp-menu-button.ui-button { display: grid; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ui-button, .ui-button::before, .ui-button::after, .ui-magnetic-button { transition: none !important; }
   .ui-button:active { transform: none; }
 }
+
+.ui-button-primary, .ui-button-default, .ui-button-flood:hover { color: var(--paper); }

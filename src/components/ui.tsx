@@ -82,9 +82,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
   if (asChild) {
     const child = React.Children.only(children) as React.ReactElement<Record<string, unknown>>;
     const childProps = child.props;
+    const childContent = React.Children.map(childProps.children as React.ReactNode, (content) => (
+      typeof content === "string" || typeof content === "number"
+        ? <span className="ui-button-label">{content}</span>
+        : content
+    ));
     const childOnClick = childProps.onClick as ((event: React.MouseEvent<HTMLElement>) => void) | undefined;
     return React.cloneElement(child, {
       ...props,
+      children: childContent,
       className: cn(classes, typeof childProps.className === "string" ? childProps.className : undefined),
       "aria-busy": loading || undefined,
       "aria-pressed": pressed,
