@@ -3,10 +3,6 @@
 import * as React from "react";
 import { Check, Copy, Download, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import SpecularButton, { type SpecularButtonProps } from "@/components/SpecularButton";
-
-export { SpecularButton };
-export type { SpecularButtonProps };
 
 export type ButtonVariant =
   | "primary" | "default" | "secondary" | "outline" | "ghost" | "soft"
@@ -51,26 +47,6 @@ function setFloodOrigin(event: React.PointerEvent<HTMLElement>, variant: ButtonV
   event.currentTarget.style.setProperty("--button-y", `${event.clientY - rect.top}px`);
 }
 
-function specularOptions(variant: ButtonVariant, shape: ButtonShape): Pick<SpecularButtonProps, "radius" | "tint" | "tintOpacity" | "textColor" | "lineColor" | "baseColor" | "intensity" | "idleIntensity" | "glow"> {
-  const options = {
-    radius: shape === "pill" ? 999 : 12,
-    tint: "#F2542D",
-    tintOpacity: 1,
-    textColor: "#FAF7F2",
-    lineColor: "#FAF7F2",
-    baseColor: "#F2542D",
-    intensity: 1,
-    idleIntensity: 0.16,
-    glow: 0.5,
-  };
-  if (variant === "secondary" || variant === "chip") return { ...options, tint: "#14110F", textColor: "#FAF7F2", lineColor: "#FAF7F2", baseColor: "#14110F" };
-  if (variant === "outline" || variant === "ghost" || variant === "link" || variant === "link-draw") return { ...options, tint: "#FAF7F2", tintOpacity: 0, textColor: "#14110F", lineColor: "#F2542D", baseColor: "#8C847A" };
-  if (variant === "soft") return { ...options, tint: "#FFE8DF", textColor: "#B02F0B", lineColor: "#F2542D", baseColor: "#FFD0BE" };
-  if (variant === "destructive" || variant === "destructive-ghost") return { ...options, tint: "#B42318", textColor: "#FFFFFF", lineColor: "#FFFFFF", baseColor: "#B42318" };
-  if (variant === "inverse" || variant === "outline-inverse") return { ...options, tint: "#FAF7F2", textColor: "#14110F", lineColor: "#FAF7F2", baseColor: "#FAF7F2" };
-  return options;
-}
-
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
     className,
@@ -95,7 +71,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
   ref,
 ) {
   const classes = classNameForButton({ className, variant, size, shape, fullWidth, mobileFull });
-  const effectOptions = specularOptions(variant, shape);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (loading) {
       event.preventDefault();
@@ -106,40 +81,49 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
 
   if (asChild) {
     const child = React.Children.only(children) as React.ReactElement<Record<string, unknown>>;
-    return <SpecularButton
-      {...props}
-      {...effectOptions}
-      asChild
-      ref={ref as React.Ref<HTMLElement>}
-      className={classes}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
-      aria-pressed={pressed}
-      data-loading={loading ? "" : undefined}
-      onClick={(event) => {
+    const childProps = child.props;
+    const childContent = React.Children.map(childProps.children as React.ReactNode, (content) => (
+      typeof content === "string" || typeof content === "number"
+        ? <span className="ui-button-label">{content}</span>
+        : content
+    ));
+    const childOnClick = childProps.onClick as ((event: React.MouseEvent<HTMLElement>) => void) | undefined;
+    return React.cloneElement(child, {
+      ...props,
+      children: childContent,
+      className: cn(classes, typeof childProps.className === "string" ? childProps.className : undefined),
+      "aria-busy": loading || undefined,
+      "aria-pressed": pressed,
+      "data-loading": loading ? "" : undefined,
+      onClick: (event: React.MouseEvent<HTMLElement>) => {
         if (loading) {
           event.preventDefault();
           return;
         }
-        onClick?.(event as React.MouseEvent<HTMLButtonElement>);
-      }}
-      onPointerEnter={(event) => setFloodOrigin(event, variant)}
-      onPointerLeave={(event) => setFloodOrigin(event, variant)}
-    >{child}</SpecularButton>;
+        childOnClick?.(event);
+      },
+      onPointerEnter: (event: React.PointerEvent<HTMLElement>) => {
+        setFloodOrigin(event, variant);
+        (childProps.onPointerEnter as ((event: React.PointerEvent<HTMLElement>) => void) | undefined)?.(event);
+      },
+      onPointerLeave: (event: React.PointerEvent<HTMLElement>) => {
+        setFloodOrigin(event, variant);
+        (childProps.onPointerLeave as ((event: React.PointerEvent<HTMLElement>) => void) | undefined)?.(event);
+      },
+    } as Partial<Record<string, unknown>>);
   }
 
   return (
-    <SpecularButton
+    <button
       {...props}
-      {...effectOptions}
-      ref={ref as React.Ref<HTMLElement>}
+      ref={ref}
       type={type ?? "button"}
       className={classes}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       aria-pressed={pressed}
       data-loading={loading ? "" : undefined}
-      onClick={(event) => handleClick(event as React.MouseEvent<HTMLButtonElement>)}
+      onClick={handleClick}
       onPointerEnter={(event) => {
         setFloodOrigin(event, variant);
         onPointerEnter?.(event);
@@ -152,7 +136,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
       {loading ? <Loader2 aria-hidden="true" className="ui-button-spinner" /> : leftIcon}
       <span className="ui-button-label">{children}</span>
       {!loading && rightIcon}
-    </SpecularButton>
+    </button>
   );
 });
 
