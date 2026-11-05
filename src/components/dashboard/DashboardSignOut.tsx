@@ -2,8 +2,10 @@
 
 import { LogOut } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { Button } from "@/components/ui";
 
 export function DashboardSignOut({ compact = false }: { compact?: boolean }) {
   async function signOut() { await createBrowserSupabaseClient().auth.signOut(); window.location.href = "/login"; }
-  return <button className={compact ? "icon-button" : "side-signout"} onClick={signOut} type="button" aria-label="Log out"><LogOut size={16} />{!compact && "Log out"}</button>;
+  if (compact) return <Button variant="ghost" size="icon" onClick={signOut} aria-label="Log out" leftIcon={<LogOut />} />;
+  return <Button variant="ghost" className="side-signout" onClick={signOut} aria-label="Log out" leftIcon={<LogOut />}>Log out</Button>;
 }

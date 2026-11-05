@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { slugify } from "@/lib/utils/slug";
 import type { Business } from "@/types/database";
+import { Button } from "@/components/ui";
 
 type FormState = Pick<Business, "name" | "slug" | "description" | "category" | "primary_color" | "secondary_color" | "accent_color" | "social_handle">;
 const defaults: FormState = { name: "", slug: "", description: "", category: "", primary_color: "#14110F", secondary_color: "#f5f4ef", accent_color: "#F2542D", social_handle: "" };
@@ -39,6 +40,6 @@ export function BusinessForm({ existing, onboarding = false }: { existing?: Busi
     <div className="color-grid">{([ ["primary_color", "Primary color"], ["secondary_color", "Secondary color"], ["accent_color", "Accent color"] ] as const).map(([key, label]) => <label key={key}>{label}<span className="color-input"><input type="color" value={form[key]} onChange={(event) => update(key, event.target.value)} /><input value={form[key]} onChange={(event) => update(key, event.target.value)} pattern="^#[0-9a-fA-F]{6}$" /></span></label>)}</div>
     <label>Logo <span className="optional">PNG, JPG or WebP · max 2 MB</span><input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => setLogo(event.target.files?.[0] ?? null)} /></label>
     {message && <p className={`form-message ${message.type}`}>{message.text}</p>}
-    <button className="button button-dark" type="submit" disabled={loading}>{loading ? "Saving…" : onboarding ? "Create my studio" : "Save changes"}</button>
+    <Button type="submit" size="md" loading={loading}>{onboarding ? "Create my studio" : "Save changes"}</Button>
   </form>;
 }

@@ -133,5 +133,5 @@
   .pp-hero-copy h1 { max-width: 760px; font-size: clamp(44px, 5.4vw, 72px); }
 }
 
-.pp-hero-copy h1 em { color: var(--coral); }
+.pp-hero-copy h1 em { color: var(--primary); }
 .pp-hero-copy h1 em::after { display: none; }

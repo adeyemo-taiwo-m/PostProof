@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { Button } from "@/components/ui";
 
 type AuthMode = "login" | "signup" | "forgot" | "reset";
 
@@ -59,7 +60,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       {mode !== "forgot" && <label>Password<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete={mode === "login" ? "current-password" : "new-password"} placeholder="At least 8 characters" minLength={8} required /></label>}
       {mode === "reset" && <label>Confirm password<input type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} autoComplete="new-password" placeholder="Repeat your password" minLength={8} required /></label>}
       {status && <p className={`form-message ${status.type}`}>{status.message}</p>}
-      <button className="button button-dark button-full" type="submit" disabled={loading}>{loading ? "Working…" : mode === "login" ? "Log in" : mode === "signup" ? "Create account" : mode === "forgot" ? "Send reset link" : "Update password"}</button>
+      <Button type="submit" size="lg" fullWidth loading={loading}>{mode === "login" ? "Log in" : mode === "signup" ? "Create account" : mode === "forgot" ? "Send reset link" : "Update password"}</Button>
       {mode === "login" && <div className="form-links"><Link href="/forgot-password">Forgot your password?</Link><span>New here? <Link href="/signup">Create an account</Link></span></div>}
       {mode === "signup" && <p className="form-footnote">Already have an account? <Link href="/login">Log in</Link></p>}
       {mode === "forgot" && <p className="form-footnote"><Link href="/login">Back to log in</Link></p>}
