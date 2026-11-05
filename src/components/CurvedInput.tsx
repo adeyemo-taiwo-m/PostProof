@@ -185,6 +185,7 @@ export type CurvedInputProps = {
   showButton?: boolean;
   showIcon?: boolean;
   icon?: ReactNode;
+  buttonIcon?: ReactNode;
   className?: string;
   style?: CSSProperties;
   maxLength?: number;
@@ -221,6 +222,7 @@ const CurvedInput = ({
   showButton = true,
   showIcon = true,
   icon,
+  buttonIcon,
   className = "",
   style,
   maxLength,
@@ -291,16 +293,20 @@ const CurvedInput = ({
     const chipWidth = chipHeight * 1.25;
     const iconU = 22 + chipWidth / 2;
     const textStartU = showIcon ? 22 + chipWidth + 13 : 24;
-    const buttonWidth = showButton ? Math.max(buttonTextWidth + fontSize * 2.7, height * 1.35) : 0;
+    const buttonWidth = showButton
+      ? buttonIcon
+        ? Math.max(fontSize * 2.8, height * 0.9)
+        : Math.max(buttonTextWidth + fontSize * 2.7, height * 1.35)
+      : 0;
     const buttonU1 = geometry.W - buttonInset;
     const buttonU0 = buttonU1 - buttonWidth;
     const textEndU = Math.max(textStartU + 20, showButton ? buttonU0 - 14 : geometry.W - 24);
     const windowLength = (textEndU - textStartU) / geometry.uPerLen;
     return { buttonInset, chipHeight, chipWidth, iconU, textStartU, textEndU, buttonU0, buttonU1, windowLength };
-  }, [geometry, height, borderWidth, buttonTextWidth, fontSize, showIcon, showButton]);
+  }, [geometry, height, borderWidth, buttonTextWidth, fontSize, showIcon, showButton, buttonIcon]);
 
   useLayoutEffect(() => {
-    if (buttonMeasureRef.current) {
+    if (!buttonIcon && buttonMeasureRef.current) {
       const nextButtonWidth = buttonMeasureRef.current.getComputedTextLength();
       setButtonTextWidth((previous) => (Math.abs(previous - nextButtonWidth) > 0.5 ? nextButtonWidth : previous));
     }
@@ -328,7 +334,7 @@ const CurvedInput = ({
       setScrollLength(nextScroll);
     }
     setCaretU(layout.textStartU + (caretLength - nextScroll) * geometry.uPerLen);
-  }, [geometry, layout, caretIndex, displayValue, buttonText, fontSize]);
+  }, [geometry, layout, caretIndex, displayValue, buttonText, fontSize, buttonIcon]);
 
   const commitValue = (nextValue: string) => {
     if (value === undefined) setInnerValue(nextValue);
@@ -420,7 +426,10 @@ const CurvedInput = ({
           Math.min(cornerRadius * 0.72, buttonHeight / 2),
         )
       : "";
-    const buttonTextPath = showButton ? bentLinePath(geometry, layout.buttonU0, layout.buttonU1, vBase) : "";
+    const buttonTextPath = showButton && !buttonIcon ? bentLinePath(geometry, layout.buttonU0, layout.buttonU1, vBase) : "";
+    const buttonCenterU = (layout.buttonU0 + layout.buttonU1) / 2;
+    const [buttonIconX, buttonIconY] = geometry.point(buttonCenterU, 0);
+    const buttonIconAngle = geometry.angleAt(buttonCenterU);
 
     content = (
       <svg
@@ -508,15 +517,29 @@ const CurvedInput = ({
             }}
           >
             <path className="curved-input__button-bg" d={buttonPath} fill={accentColor} />
-            <path id={buttonPathId} d={buttonTextPath} fill="none" />
-            <text fill={buttonForegroundColor} textAnchor="middle" style={{ fontSize: `${fontSize}px`, fontWeight: 600, pointerEvents: "none" }}>
-              <textPath href={`#${buttonPathId}`} startOffset="50%">{buttonText}</textPath>
-            </text>
+            {buttonIcon ? (
+              <g
+                transform={`translate(${round2(buttonIconX)} ${round2(buttonIconY)}) rotate(${round2(buttonIconAngle)})`}
+                style={{ color: buttonForegroundColor, pointerEvents: "none" }}
+                aria-hidden="true"
+              >
+                {buttonIcon}
+              </g>
+            ) : (
+              <>
+                <path id={buttonPathId} d={buttonTextPath} fill="none" />
+                <text fill={buttonForegroundColor} textAnchor="middle" style={{ fontSize: `${fontSize}px`, fontWeight: 600, pointerEvents: "none" }}>
+                  <textPath href={`#${buttonPathId}`} startOffset="50%">{buttonText}</textPath>
+                </text>
+              </>
+            )}
           </g>
         )}
-        <text ref={buttonMeasureRef} style={{ fontSize: `${fontSize}px`, fontWeight: 600 }} x="-9999" y="-9999" visibility="hidden" aria-hidden="true">
-          {buttonText}
-        </text>
+        {!buttonIcon && (
+          <text ref={buttonMeasureRef} style={{ fontSize: `${fontSize}px`, fontWeight: 600 }} x="-9999" y="-9999" visibility="hidden" aria-hidden="true">
+            {buttonText}
+          </text>
+        )}
       </svg>
     );
   }

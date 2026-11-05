@@ -146,6 +146,6 @@
 .pp-card-middle .pp-card-template { color: var(--paper); }
 .pp-live-type { border-radius: 999px; }
 .pp-live-type button { border-radius: 50%; }
-.pp-live-type.curved-input { display: block; min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.pp-live-type.curved-input { display: block; min-height: 0; margin-top: 44px; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .pp-live-type.curved-input:focus-within { border-color: transparent; }
 .pp-live-type.curved-input .curved-input__field { min-width: 0; flex: none; border: 0; padding: 0; }
