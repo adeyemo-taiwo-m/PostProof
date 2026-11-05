@@ -144,3 +144,5 @@
 .pp-wordmark-mark, .pp-button-coral, .pp-button-coral:hover, .pp-card-middle, .pp-quote-card.pp-card-coral, .pp-approval-stamp, .pp-copy-action, .pp-approve-small, .pp-phone-submit, .pp-review-approve, .pp-studio-sticker, .pp-url-pill, .pp-url-pill button, .pp-slider-handle, .pp-big-quote, .pp-before-after .pp-after-card { color: var(--paper); }
 .pp-card-mark { color: var(--paper); }
 .pp-card-middle .pp-card-template { color: var(--paper); }
+.pp-live-type { border-radius: 999px; }
+.pp-live-type button { border-radius: 50%; }
