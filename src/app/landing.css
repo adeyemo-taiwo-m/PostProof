@@ -38,7 +38,7 @@
 .pp-stack-area { position: relative; z-index: 1; min-height: 465px; perspective: 1100px; }
 .pp-stack-area.pp-area-9-16 { min-height: 520px; }
 .pp-stack { top: 28px; left: 50%; width: 315px; height: 425px; transform: translateX(-50%); transform-style: preserve-3d; }
-.pp-quote-card { width: 315px; height: 425px; aspect-ratio: 4 / 5; border-radius: var(--radius-xl); transform-style: preserve-3d; transform-origin: center; translate: 0 0; will-change: transform, opacity; animation: pp-card-float 7s ease-in-out infinite; transition: transform .42s var(--pp-ease), opacity .18s ease; }
+.pp-quote-card { width: 315px; height: 425px; aspect-ratio: 4 / 5; border-radius: var(--radius-xl); transform-style: preserve-3d; transform-origin: center; translate: 0 0; will-change: transform, opacity; animation: pp-card-float 7s ease-in-out infinite; transition: transform .72s cubic-bezier(.2, 0, 0, 1), opacity .18s ease; }
 .pp-quote-card::after { position: absolute; z-index: 8; inset: 0; border: 1px solid rgb(255 255 255 / .08); border-radius: inherit; content: ""; pointer-events: none; }
 .pp-card-front { --hover-scale: 0; --tilt-x: 0; --tilt-y: 0; z-index: 5; background: var(--ink); transform: rotateZ(-1deg) rotateX(calc(var(--tilt-y) * -10deg)) rotateY(calc(var(--tilt-x) * 12deg)) translateZ(24px) scale(calc(1 + var(--hover-scale))); }
 .pp-card-front::before { position: absolute; z-index: 1; inset: -35%; content: ""; background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgb(255 255 255 / .16), transparent 55%); opacity: .9; pointer-events: none; transform: translate3d(calc(var(--tilt-x) * 7px), calc(var(--tilt-y) * 7px), 0); transition: opacity .18s ease; }
@@ -51,6 +51,20 @@
 .pp-card-front .pp-card-quote::first-letter { color: var(--coral-500); }
 .pp-card-middle { z-index: 3; color: var(--ink); background: var(--coral-500); transform: translate(44px, 16px) rotateZ(7deg); }
 .pp-card-back { z-index: 2; color: var(--ink); background: #F4EFE6; transform: translate(-44px, 10px) rotateZ(-8deg); }
+.pp-quote-card.pp-card-ink { color: var(--paper); background: var(--ink); }
+.pp-quote-card.pp-card-coral { color: var(--ink); background: var(--coral-500); }
+.pp-quote-card.pp-card-editorial { color: var(--ink); background: #F4EFE6; }
+.pp-quote-card.pp-card-paper { color: var(--ink); background: var(--surface); }
+.pp-quote-card.pp-card-ink .pp-card-mark { color: var(--ink); background: var(--coral-500); }
+.pp-quote-card.pp-card-coral .pp-card-mark { color: var(--ink); background: var(--paper); }
+.pp-quote-card.pp-card-editorial .pp-card-mark { color: var(--ink); background: var(--coral-200); }
+.pp-quote-card.pp-card-paper .pp-card-mark { color: var(--ink); background: var(--coral-100); }
+.pp-quote-card.pp-card-ink .pp-card-template { color: var(--coral-500); }
+.pp-quote-card.pp-card-coral .pp-card-template, .pp-quote-card.pp-card-editorial .pp-card-template, .pp-quote-card.pp-card-paper .pp-card-template { color: var(--ink); }
+.pp-quote-card.pp-card-editorial .pp-card-quote { font-family: Georgia, serif; font-weight: 400; }
+.pp-quote-card.pp-card-paper .pp-card-quote { font-family: var(--sans); font-weight: 500; letter-spacing: -.02em; }
+.pp-quote-card.pp-card-ink .pp-card-quote::first-letter { color: var(--coral-500); }
+.pp-quote-card.pp-card-coral .pp-card-quote::first-letter, .pp-quote-card.pp-card-editorial .pp-card-quote::first-letter, .pp-quote-card.pp-card-paper .pp-card-quote::first-letter { color: currentColor; }
 .pp-card-front { animation-delay: -1.2s; }
 .pp-card-middle { animation-delay: -3.4s; }
 .pp-card-back { animation-delay: -5.7s; }
@@ -68,6 +82,7 @@
 .pp-card-back:hover, .pp-card-back:focus-visible { transform: translate(-44px, -4px) rotateZ(-10deg); }
 .pp-card-middle::before { position: absolute; z-index: 7; inset: -20% -60%; content: ""; background: linear-gradient(110deg, transparent 42%, rgb(255 255 255 / .16) 50%, transparent 58%); opacity: 0; pointer-events: none; transform: translateX(-55%); transition: opacity .18s ease, transform .5s var(--pp-ease); }
 .pp-card-middle:hover::before, .pp-card-middle:focus-visible::before { opacity: 1; transform: translateX(55%); }
+.pp-stack.is-swapping .pp-quote-card { transition-duration: .72s; }
 .pp-stack.is-printing .pp-card-front { opacity: .2; transform: translateY(120px) rotateZ(-3deg) scale(.98); }
 .pp-stack.is-printing .pp-approval-stamp { opacity: 0 !important; }
 .pp-demo-paused .pp-quote-card { animation-play-state: paused; }
