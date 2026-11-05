@@ -77,7 +77,7 @@
 .pp-approval-stamp.pp-stamp-coral, .pp-approval-stamp.pp-stamp-editorial, .pp-approval-stamp.pp-stamp-paper { color: var(--ink); background: var(--paper); border-color: var(--ink); }
 .pp-hero-controls { position: relative; z-index: 2; padding-top: 0; }
 .pp-format-controls { position: static; justify-content: center; margin: 0 auto 12px; transform: none; }
-.pp-live-type { position: relative; right: auto; bottom: auto; left: auto; width: min(90%, 560px); min-height: 52px; margin: 20px auto 0; padding: 0 10px 0 13px; background: var(--paper); }
+.pp-live-type { position: relative; right: auto; bottom: auto; left: auto; width: min(90%, 560px); min-height: 52px; margin: 32px auto 0; padding: 0 10px 0 13px; background: var(--paper); }
 .pp-live-type > span:last-child { transition: color .18s ease; }
 .pp-live-type.is-warning > span:last-child { color: var(--warning); }
 .pp-live-type button { display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center; border: 0; border-radius: var(--radius-sm); color: var(--ink); background: var(--coral-500); cursor: pointer; transition: transform .18s var(--pp-ease), background .18s ease; }
