@@ -79,7 +79,7 @@ function QuoteCard({ sample, position, format, text, events }: { sample: (typeof
 
 function HeroStack({ paused }: { paused: boolean }) {
   const [index, setIndex] = useState(0);
-  const [format, setFormat] = useState<Format>("4:5");
+  const format: Format = "4:5";
   const [text, setText] = useState("");
   const [isPrinting, setIsPrinting] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -122,10 +122,9 @@ function HeroStack({ paused }: { paused: boolean }) {
         <QuoteCard sample={current} position="front" format={format} text={text} events={{ cardRef: frontRef, onClick: () => { if (!touchActive.current) shuffle(); }, onPointerEnter: () => setIsHovered(true), onPointerMove: setTilt, onPointerLeave: () => { setIsHovered(false); setIsPressed(false); clearTilt(); }, onPointerDown: () => setIsPressed(true), onPointerUp: () => setIsPressed(false), onPointerCancel: () => setIsPressed(false) }} />
         <motion.div key={`${stampKey}-${current.brand}`} className={`pp-approval-stamp pp-stamp-${current.tone}`} initial={{ opacity: 0, scale: 2.2, rotate: -22 }} animate={{ opacity: 1, scale: 1, rotate: -12 }} transition={{ type: "spring", stiffness: 420, damping: 18 }}><Check size={13} /> APPROVED WITH CONSENT</motion.div>
       </div>
-      <div className="pp-press-slot" aria-hidden="true" />
       <button className="pp-shuffle" type="button" onClick={shuffle} aria-label="Shuffle cards" title="Shuffle cards"><Quote size={17} /></button>
     </div>
-    <div className="pp-hero-controls"><div className="pp-format-controls" aria-label="Preview format"><span>Format</span>{(["4:5", "1:1", "9:16"] as Format[]).map((item) => <button key={item} className={format === item ? "active" : ""} type="button" onClick={() => setFormat(item)}>{item}</button>)}</div><label className={`pp-live-type ${text.length > 80 ? "is-warning" : ""}`}><span className="sr-only">Type something kind about your work</span><MessageCircle size={16} /><input maxLength={90} value={text} onChange={(event) => onType(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); printCard(); } }} placeholder="Type something kind about your work..." /><span>{text.length}/90</span><button type="button" onClick={printCard} aria-label="Print a fresh testimonial card"><ArrowUpRight size={16} /></button></label><p className="pp-demo-caption">Just a preview. Nothing is sent.</p><span className="sr-only" aria-live="polite">{announcement}</span></div>
+    <div className="pp-hero-controls"><label className={`pp-live-type ${text.length > 80 ? "is-warning" : ""}`}><span className="sr-only">Type something kind about your work</span><MessageCircle size={16} /><input maxLength={90} value={text} onChange={(event) => onType(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); printCard(); } }} placeholder="Type something kind about your work..." /><span>{text.length}/90</span><button type="button" onClick={printCard} aria-label="Print a fresh testimonial card"><ArrowUpRight size={16} /></button></label><p className="pp-demo-caption">Just a preview. Nothing is sent.</p><span className="sr-only" aria-live="polite">{announcement}</span></div>
   </div>;
 }
 

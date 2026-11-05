@@ -30,8 +30,13 @@
 /* Hero card press refinement: the deck has its own reserved stage so motion can never
    paint over the live input below it. The variables keep pointer work compositor-only. */
 .pp-hero-demo { min-height: 0; }
-.pp-stack-area { position: relative; z-index: 1; min-height: 510px; perspective: 1100px; }
-.pp-stack-area.pp-area-9-16 { min-height: 610px; }
+.pp-orbit { transform-origin: 50% 50%; will-change: transform; animation: pp-orbit-spin 30s linear infinite; }
+.pp-orbit-one { --orbit-angle: -24deg; animation-delay: -8s; }
+.pp-orbit-two { --orbit-angle: 47deg; animation-delay: -15s; }
+.pp-orbit-dot { animation-duration: 24s; }
+.pp-demo-paused .pp-orbit, .pp-demo-paused .pp-orbit-dot { animation-play-state: paused; }
+.pp-stack-area { position: relative; z-index: 1; min-height: 465px; perspective: 1100px; }
+.pp-stack-area.pp-area-9-16 { min-height: 520px; }
 .pp-stack { top: 28px; left: 50%; width: 315px; height: 425px; transform: translateX(-50%); transform-style: preserve-3d; }
 .pp-quote-card { width: 315px; height: 425px; aspect-ratio: 4 / 5; border-radius: var(--radius-xl); transform-style: preserve-3d; transform-origin: center; translate: 0 0; will-change: transform, opacity; animation: pp-card-float 7s ease-in-out infinite; transition: transform .42s var(--pp-ease), opacity .18s ease; }
 .pp-quote-card::after { position: absolute; z-index: 8; inset: 0; border: 1px solid rgb(255 255 255 / .08); border-radius: inherit; content: ""; pointer-events: none; }
@@ -77,8 +82,6 @@
 .pp-approval-stamp { right: -14px; bottom: 38px; z-index: 14; color: var(--paper); background: var(--ink); border-color: var(--paper); box-shadow: 6px 6px 0 var(--ink); transform-origin: 80% 80%; pointer-events: none; }
 .pp-approval-stamp.pp-stamp-ink { color: var(--paper); background: var(--ink); border-color: var(--paper); }
 .pp-approval-stamp.pp-stamp-coral, .pp-approval-stamp.pp-stamp-editorial, .pp-approval-stamp.pp-stamp-paper { color: var(--ink); background: var(--paper); border-color: var(--ink); }
-.pp-press-slot { position: absolute; z-index: 4; top: 500px; left: 15%; width: 70%; height: 10px; border-radius: 999px; background: var(--ink); box-shadow: 0 8px 0 -2px var(--coral-200), 0 12px 20px rgb(242 84 45 / .25); }
-.pp-area-9-16 .pp-press-slot { top: 540px; }
 .pp-hero-controls { position: relative; z-index: 2; padding-top: 0; }
 .pp-format-controls { position: static; justify-content: center; margin: 0 auto 12px; transform: none; }
 .pp-live-type { position: relative; right: auto; bottom: auto; left: auto; width: min(90%, 560px); min-height: 52px; margin: 20px auto 0; padding: 0 10px 0 13px; background: var(--paper); }
@@ -87,17 +90,16 @@
 .pp-live-type button { display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center; border: 0; border-radius: var(--radius-sm); color: var(--ink); background: var(--coral-500); cursor: pointer; transition: transform .18s var(--pp-ease), background .18s ease; }
 .pp-live-type button:hover { background: var(--coral-400); transform: translate(2px, -2px); }
 .pp-demo-caption { position: static; margin: 12px 0 0; }
-.pp-shuffle { right: 2%; bottom: 8px; z-index: 10; }
+.pp-shuffle { top: 230px; right: 2%; bottom: auto; z-index: 10; }
 @keyframes pp-card-float { 0%, 100% { translate: 0 -2px; } 50% { translate: 0 4px; } }
+@keyframes pp-orbit-spin { from { transform: rotate(var(--orbit-angle)); } to { transform: rotate(calc(var(--orbit-angle) + 360deg)); } }
 @keyframes pp-type-pulse { 50% { transform: rotateZ(-1deg) rotateX(calc(var(--tilt-y) * -10deg)) rotateY(calc(var(--tilt-x) * 12deg)) translateZ(24px) scale(1.01); } }
 
 @media (max-width: 639px) {
   .pp-hero-demo { width: 100%; min-height: 0; margin: 15px auto 0; transform: none; }
-  .pp-stack-area { min-height: 510px; }
-  .pp-stack-area.pp-area-9-16 { min-height: 610px; }
+  .pp-stack-area { min-height: 465px; }
+  .pp-stack-area.pp-area-9-16 { min-height: 520px; }
   .pp-stack { transform: translateX(-50%) scale(.86); transform-origin: top center; }
-  .pp-press-slot { top: 500px; }
-  .pp-area-9-16 .pp-press-slot { top: 540px; }
   .pp-shuffle { right: 0; }
   .pp-live-type { width: 100%; }
 }
@@ -106,6 +108,7 @@
   .pp-stack { perspective: none; }
   .pp-quote-card, .pp-card-front, .pp-card-middle, .pp-card-back, .pp-card-reserve { transform: none !important; translate: 0 0 !important; animation: none !important; transition: opacity .12s ease !important; }
   .pp-card-front::before, .pp-card-middle::before { display: none; }
+  .pp-orbit, .pp-orbit-dot { animation: none !important; }
   .pp-card-middle, .pp-card-back { clip-path: none; mask-image: none; }
   .pp-card-middle .pp-card-quote, .pp-card-middle .pp-card-foot, .pp-card-back .pp-card-quote, .pp-card-back .pp-card-foot { opacity: .18; }
   .pp-stack.is-printing .pp-card-reserve { opacity: 1; }
