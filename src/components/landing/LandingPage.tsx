@@ -8,9 +8,9 @@ import {
   ArrowDownRight,
   ArrowUp,
   ArrowUpRight,
+  BadgeCheck,
   Check,
   CheckCircle2,
-  ChevronRight,
   CirclePause,
   CirclePlay,
   Clock3,
@@ -21,8 +21,10 @@ import {
   Mail,
   Menu,
   MessageCircle,
+  MessageSquareHeart,
   MoveUpRight,
   Quote,
+  Link2,
   X,
 } from "lucide-react";
 import { Button, MagneticButton } from "@/components/ui";
@@ -318,6 +320,42 @@ function LoopDemo({ step, paused }: { step: number; paused: boolean }) {
   return <InteractiveLoopDemo step={step} paused={paused || sectionPaused} reducedMotion={reducedMotion} restartKey={step} />;
 }
 
+const WINDING_ICONS = [Link2, MessageSquareHeart, BadgeCheck] as const;
+
+function IconBadge({ icon: Icon, active }: { icon: (typeof WINDING_ICONS)[number]; active: boolean }) {
+  return <span className={`pp-winding-icon-badge ${active ? "is-active" : ""}`} aria-hidden="true"><Icon size={25} strokeWidth={1.5} /></span>;
+}
+
+function StepNode({ index, active }: { index: number; active: boolean }) {
+  return <span className={`pp-winding-node-block ${active ? "is-active" : ""}`} aria-hidden="true"><span className="pp-winding-step-label">STEP</span><strong>0{index + 1}</strong></span>;
+}
+
+function StepPill({ item, index, active, onSelect }: { item: (typeof loopSteps)[number]; index: number; active: boolean; onSelect: (index: number) => void }) {
+  const Icon = WINDING_ICONS[index];
+  return <button id={`loop-tab-${index}`} className={`pp-winding-step ${active ? "active" : ""}`} type="button" role="tab" tabIndex={active ? 0 : -1} aria-selected={active} aria-controls="loop-panel" onClick={() => onSelect(index)}><span className="pp-winding-notch" aria-hidden="true" /><IconBadge icon={Icon} active={active} /><span className="pp-step-copy"><b>{item.title}</b><small>{item.copy}</small></span><StepNode index={index} active={active} /></button>;
+}
+
+function WindingStepList({ activeStep, onSelect }: { activeStep: number; onSelect: (index: number) => void }) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    if (!listRef.current || !("IntersectionObserver" in window)) {
+      setRevealed(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      setRevealed(true);
+      observer.disconnect();
+    }, { threshold: 0.2 });
+    observer.observe(listRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={listRef} className={`pp-step-list pp-winding-list ${revealed ? "is-revealed" : ""}`} role="tablist" aria-label="How Postproof works"><span className="pp-winding-anchor" aria-hidden="true" />{loopSteps.map((item, index) => <StepPill key={item.title} item={item} index={index} active={activeStep === index} onSelect={onSelect} />)}</div>;
+}
+
 function BeforeAfter() {
   const [value, setValue] = useState(50);
   return <div className="pp-before-after-wrap"><div className="pp-before-after" style={{ "--reveal": `${value}%` } as React.CSSProperties}>
@@ -436,7 +474,7 @@ export default function LandingPage() {
 
     <section className="pp-hero pp-section" data-section="hero"><DarkVeil className="pp-hero-veil" aria-hidden="true" color="#F5C2B3" speed={0.3} scale={1.15} rotation={35} flow={0.9} warp={0.2} variation={2} brightness={1} sheen={0.12} glow={0.42} grain={0.01} quality={0.5} mouseInteraction mouseStrength={0.6} intro fade={0.04} opacity={0.62} lightMode paused={paused} /><div className="pp-coral-wash" /><div className="pp-container pp-hero-grid"><div className="pp-hero-copy"><span className="pp-sticker"><i /> PROOF WORTH POSTING</span><h1><WarpText as="span" className="pp-hero-warp" text={"Turn customer\nlove into"} textAlign="left" fitWidth={0.98} fitHeight={0.96} fontSize="1.03em" fontWeight="inherit" fontFamily="inherit" letterSpacing="inherit" lineHeight={0.92} warpStrength={0.06} pointerStrength={0.3} idleDrift={0.1} /><ProofText text="proof worth posting." /></h1><p>Collect customer reviews with one link. Approve the ones you love. Download them as branded, ready-to-post graphics.</p><div className="pp-hero-actions"><MagneticButton asChild variant="flood" size="xl" shape="pill"><Link href="/signup">Create your link <ArrowUpRight aria-hidden="true" /></Link></MagneticButton><Button asChild variant="link-draw"><a href="#the-loop">See how it works <ArrowDown aria-hidden="true" /></a></Button></div></div><HeroStack paused={paused} /></div></section>
 
-    <section className={`pp-loop pp-section pp-loop-step-${loopStep + 1}`} id="the-loop" data-section="loop"><div className="pp-container"><div className="pp-section-intro"><div><span className="pp-overline">THE SIMPLE LOOP</span><h2>Less admin.<br /><ProofText text="More proof." /></h2></div><div><p>Great work creates great stories. Postproof gives those stories a place to land—and gives you a graceful way to put them back into the world.</p><a className="pp-text-link" href="#link-claim">Build your collection link <ArrowUpRight size={16} /></a></div></div><div className="pp-loop-grid"><div className="pp-step-list" role="tablist" aria-label="How Postproof works">{loopSteps.map((item, index) => <button key={item.title} className={loopStep === index ? "active" : ""} type="button" role="tab" aria-selected={loopStep === index} onClick={() => setLoopStep(index)}><span className="pp-step-number">0{index + 1}</span><span><b>{item.title}</b><small>{item.copy}</small></span><ChevronRight size={18} /></button>)}</div><LoopDemo key={loopStep} step={loopStep} paused={paused} /></div></div></section>
+    <section className={`pp-loop pp-section pp-loop-step-${loopStep + 1}`} id="the-loop" data-section="loop"><div className="pp-container"><div className="pp-section-intro"><div><span className="pp-overline">THE SIMPLE LOOP</span><h2>Less admin.<br /><ProofText text="More proof." /></h2></div><div><p>Great work creates great stories. Postproof gives those stories a place to land—and gives you a graceful way to put them back into the world.</p><a className="pp-text-link" href="#link-claim">Build your collection link <ArrowUpRight size={16} /></a></div></div><div className="pp-loop-grid"><WindingStepList activeStep={loopStep} onSelect={(index) => setLoopStep(index)} /><LoopDemo key={loopStep} step={loopStep} paused={paused} /></div></div></section>
 
     <section className="pp-best-words pp-section" id="why-postproof" data-section="best-words"><div className="pp-container"><div className="pp-section-intro pp-section-intro-light"><div><span className="pp-overline">THE HOME FOR YOUR BEST WORDS</span><h2>A nice message shouldn&apos;t live in a screenshot.</h2></div><div><p>Give your customer&apos;s words the care they deserve. A calm inbox, a clear approval flow, and graphics that feel designed—not generated.</p></div></div><BeforeAfter /><div className="pp-benefit-rows"><div><span>01</span><b>No more screenshot hunting</b><em>One tidy inbox.</em></div><div><span>02</span><b>No design queue for every kind word</b><em>Graphics in a click.</em></div><div><span>03</span><b>No AI-written customer stories</b><em>Real words only.</em></div></div><Link className="pp-button pp-button-coral" href="/signup">Make it yours <MoveUpRight size={17} /></Link></div></section>
 

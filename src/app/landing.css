@@ -327,3 +327,202 @@
   .pp-loop .pp-step-list button:not(.active) .pp-step-number { color: #C2410C; opacity: .15; }
   .pp-loop .pp-step-list button.active .pp-step-number { color: #F0522D; opacity: 1; }
 }
+
+/* Winding infographic timeline. The SVG is the single source for the S-curve; pills and nodes sit over it. */
+.pp-loop .pp-winding-list { position: relative; display: block; height: 540px; min-height: 540px; padding: 0; overflow: visible; background: transparent; }
+.pp-winding-step { position: absolute; z-index: 1; display: block; width: 64%; height: 136px; min-height: 136px; margin: 0; padding: 0; border: 1px solid rgb(26 22 19 / .1); border-radius: 68px; color: #1A1613; text-align: left; box-shadow: 0 10px 24px rgb(60 30 10 / .1), 0 2px 4px rgb(60 30 10 / .06); overflow: visible; cursor: pointer; transition: transform .22s cubic-bezier(.2,.8,.2,1), background-color .45s ease, color .45s ease, box-shadow .45s ease, border-color .22s ease; }
+.pp-winding-step:nth-of-type(2) { top: 4%; left: 0; background: rgb(255 255 255 / .85); }
+.pp-winding-step:nth-of-type(3) { top: 35%; right: 0; left: auto; background: #FFE4DC; }
+.pp-winding-step:nth-of-type(4) { top: 66%; left: 0; background: #F8D2C5; }
+.pp-winding-step.active { color: #fff; border-color: #F0522D; background: #F0522D; box-shadow: 0 14px 34px rgb(240 82 45 / .35); }
+.pp-winding-step:not(.active):hover { border-color: rgb(240 82 45 / .42); box-shadow: 0 14px 28px rgb(60 30 10 / .15), 0 2px 5px rgb(60 30 10 / .06); }
+.pp-winding-step:nth-of-type(2):not(.active):hover, .pp-winding-step:nth-of-type(4):not(.active):hover { transform: translate(6px, -4px); }
+.pp-winding-step:nth-of-type(3):not(.active):hover { transform: translate(-6px, -4px); }
+.pp-winding-step:active { transform: scale(.985); }
+.pp-winding-step:nth-of-type(2):focus-visible, .pp-winding-step:nth-of-type(4):focus-visible { outline: 2px solid #F0522D; outline-offset: 4px; }
+.pp-winding-step:nth-of-type(3):focus-visible { outline: 2px solid #F0522D; outline-offset: 4px; }
+.pp-winding-notch { position: absolute; z-index: -1; top: 50%; width: 28px; height: 28px; border-radius: 7px; background: inherit; transform: translateY(-50%) rotate(45deg); }
+.pp-winding-step:nth-of-type(2) .pp-winding-notch, .pp-winding-step:nth-of-type(4) .pp-winding-notch { right: -11px; }
+.pp-winding-step:nth-of-type(3) .pp-winding-notch { left: -11px; }
+.pp-winding-icon-badge { position: absolute; z-index: 3; top: 50%; display: grid; width: 72px; height: 72px; place-items: center; border: 1px solid rgb(26 22 19 / .08); border-radius: 50%; color: #C2410C; background: #fff; box-shadow: 0 4px 12px rgb(60 30 10 / .14), inset 0 0 0 4px rgb(255 255 255 / .6); transform: translateY(-50%); transition: transform .22s cubic-bezier(.2,.8,.2,1), color .22s ease, box-shadow .45s ease; }
+.pp-winding-step:nth-of-type(2) .pp-winding-icon-badge, .pp-winding-step:nth-of-type(4) .pp-winding-icon-badge { right: -36px; }
+.pp-winding-step:nth-of-type(3) .pp-winding-icon-badge { left: -36px; }
+.pp-winding-step.active .pp-winding-icon-badge { color: #F0522D; animation: pp-winding-badge-pop .45s cubic-bezier(.2,.8,.2,1); }
+.pp-winding-step:not(.active):hover .pp-winding-icon-badge { color: #F0522D; transform: translateY(-50%) rotate(8deg); }
+.pp-winding-step:not(.active) .pp-winding-icon-badge { animation: pp-winding-float 4s ease-in-out infinite; }
+.pp-winding-step:nth-of-type(3) .pp-winding-icon-badge { animation-delay: .55s; }
+.pp-winding-step:nth-of-type(4) .pp-winding-icon-badge { animation-delay: 1.1s; }
+.pp-step-copy { position: absolute; top: 50%; right: 78px; left: 28px; max-width: none; transform: translateY(-50%); }
+.pp-winding-step:nth-of-type(3) .pp-step-copy { right: 28px; left: 78px; }
+.pp-winding-step .pp-step-copy b { display: block; font-family: var(--font-display), var(--sans); font-size: 19px; font-weight: 600; letter-spacing: -.02em; }
+.pp-winding-step .pp-step-copy small { display: block; max-width: 28ch; margin-top: 6px; color: #6B625A; font-size: 12px; line-height: 1.35; }
+.pp-winding-step.active .pp-step-copy small { color: rgb(255 255 255 / .8); }
+.pp-winding-node-block { position: absolute; top: 50%; width: 128px; height: 70px; transform: translateY(-50%); pointer-events: none; }
+.pp-winding-step:nth-of-type(2) .pp-winding-node-block, .pp-winding-step:nth-of-type(4) .pp-winding-node-block { left: calc(100% - 2px); text-align: left; }
+.pp-winding-step:nth-of-type(3) .pp-winding-node-block { right: calc(100% - 2px); text-align: right; }
+.pp-winding-node { position: absolute; top: 50%; display: grid; width: 22px; height: 22px; place-items: center; border: 2px solid rgb(26 22 19 / .3); border-radius: 50%; background: #FAF6F0; transform: translateY(-50%); }
+.pp-winding-step:nth-of-type(2) .pp-winding-node, .pp-winding-step:nth-of-type(4) .pp-winding-node { left: 0; }.pp-winding-step:nth-of-type(3) .pp-winding-node { right: 0; }
+.pp-winding-node i { width: 6px; height: 6px; border-radius: 50%; background: rgb(26 22 19 / .3); }
+.pp-winding-step.active .pp-winding-node { border-color: #F0522D; background: #FAF6F0; box-shadow: 0 0 0 7px rgb(240 82 45 / .12); animation: pp-winding-node-pulse 2s ease-in-out infinite; }
+.pp-winding-step.active .pp-winding-node i { background: #F0522D; }
+.pp-winding-step:hover:not(.active) .pp-winding-node { border-color: rgb(240 82 45 / .6); background: rgb(240 82 45 / .3); }
+.pp-winding-step:hover:not(.active) .pp-winding-node i { background: #F0522D; }
+.pp-winding-step-label { display: block; color: rgb(26 22 19 / .45); font-family: var(--mono); font-size: 10px; letter-spacing: .12em; line-height: 1; }
+.pp-winding-step:nth-of-type(2) .pp-winding-step-label, .pp-winding-step:nth-of-type(4) .pp-winding-step-label { margin-left: 32px; }.pp-winding-step:nth-of-type(3) .pp-winding-step-label { margin-right: 32px; }
+.pp-winding-node-block strong { display: block; color: rgb(240 82 45 / .35); font-family: var(--font-display), var(--sans); font-size: 52px; font-variant-numeric: tabular-nums; letter-spacing: -.06em; line-height: .9; }
+.pp-winding-step:nth-of-type(2) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(2) .pp-winding-node-block .pp-winding-step-label, .pp-winding-step:nth-of-type(4) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(4) .pp-winding-node-block .pp-winding-step-label { margin-left: 32px; }.pp-winding-step:nth-of-type(3) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(3) .pp-winding-node-block .pp-winding-step-label { margin-right: 32px; }
+.pp-winding-step.active .pp-winding-node-block strong { color: #F0522D; transform: scale(1.06); }.pp-winding-step.active .pp-winding-step-label { color: #F0522D; }
+.pp-loop:has(.pp-winding-step:hover) .pp-loop-demo { box-shadow: 0 26px 62px rgb(240 82 45 / .18); }
+@keyframes pp-winding-badge-pop { 0% { transform: translateY(-50%) scale(.9); } 60% { transform: translateY(-50%) scale(1.05); } 100% { transform: translateY(-50%) scale(1); } }
+@keyframes pp-winding-float { 0%, 100% { margin-top: 0; } 50% { margin-top: -2px; } }
+@keyframes pp-winding-node-pulse { 0%, 100% { box-shadow: 0 0 0 6px rgb(240 82 45 / .1); } 50% { box-shadow: 0 0 0 10px rgb(240 82 45 / .18); } }
+
+@media (max-width: 1023px) {
+  .pp-loop .pp-winding-list { height: 450px; min-height: 450px; padding: 0; overflow: visible; }
+  .pp-loop .pp-winding-step { width: 68%; height: 108px; min-height: 108px; border-radius: 54px; }
+  .pp-loop .pp-winding-step:nth-of-type(2) { top: 3%; }.pp-loop .pp-winding-step:nth-of-type(3) { top: 35%; }.pp-loop .pp-winding-step:nth-of-type(4) { top: 67%; }
+  .pp-winding-icon-badge { width: 56px; height: 56px; }.pp-winding-step:nth-of-type(2) .pp-winding-icon-badge, .pp-winding-step:nth-of-type(4) .pp-winding-icon-badge { right: -28px; }.pp-winding-step:nth-of-type(3) .pp-winding-icon-badge { left: -28px; }
+  .pp-winding-step .pp-step-copy { right: 62px; left: 20px; }.pp-winding-step:nth-of-type(3) .pp-step-copy { right: 20px; left: 62px; }.pp-winding-step .pp-step-copy b { font-size: 16px; }.pp-winding-step .pp-step-copy small { margin-top: 4px; font-size: 11px; }
+  .pp-winding-node-block { width: 96px; }.pp-winding-node-block strong { font-size: 38px; }.pp-winding-node { width: 18px; height: 18px; }.pp-winding-node i { width: 5px; height: 5px; }.pp-winding-step-label { font-size: 8px; }.pp-winding-step:nth-of-type(2) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(2) .pp-winding-node-block .pp-winding-step-label, .pp-winding-step:nth-of-type(4) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(4) .pp-winding-node-block .pp-winding-step-label { margin-left: 25px; }.pp-winding-step:nth-of-type(3) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(3) .pp-winding-node-block .pp-winding-step-label { margin-right: 25px; }
+}
+
+@media (max-width: 639px) {
+  .pp-loop .pp-winding-list { height: 430px; min-height: 430px; }
+  .pp-loop .pp-winding-step { width: 70%; height: 98px; min-height: 98px; }.pp-loop .pp-winding-step:nth-of-type(2) { top: 3%; }.pp-loop .pp-winding-step:nth-of-type(3) { top: 36%; }.pp-loop .pp-winding-step:nth-of-type(4) { top: 69%; }
+  .pp-winding-icon-badge { width: 52px; height: 52px; }.pp-winding-icon-badge svg { width: 20px; height: 20px; }.pp-winding-step .pp-step-copy { right: 54px; left: 16px; }.pp-winding-step:nth-of-type(3) .pp-step-copy { right: 16px; left: 54px; }.pp-winding-step .pp-step-copy b { font-size: 14px; }.pp-winding-step .pp-step-copy small { max-width: 22ch; font-size: 10px; }
+  .pp-winding-node-block { width: 78px; }.pp-winding-node-block strong { font-size: 32px; }.pp-winding-step-label { font-size: 7px; }.pp-winding-node { width: 16px; height: 16px; }.pp-winding-node i { width: 4px; height: 4px; }.pp-winding-step:nth-of-type(2) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(2) .pp-winding-node-block .pp-winding-step-label, .pp-winding-step:nth-of-type(4) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(4) .pp-winding-node-block .pp-winding-step-label { margin-left: 22px; }.pp-winding-step:nth-of-type(3) .pp-winding-node-block strong, .pp-winding-step:nth-of-type(3) .pp-winding-node-block .pp-winding-step-label { margin-right: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-winding-step:not(.active) .pp-winding-icon-badge, .pp-winding-step.active .pp-winding-node { animation: none; }
+  .pp-winding-step, .pp-winding-icon-badge { transition-duration: .15s; }
+}
+
+/* Final winding-timeline overrides. The SVG remains behind the interactive pills. */
+.pp-loop .pp-step-list.pp-winding-list { display: block; height: 540px; min-height: 540px; padding: 0; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.pp-winding-anchor { position: absolute; inset: 0; pointer-events: none; }
+.pp-loop .pp-step-list button.pp-winding-step { position: absolute; z-index: 1; display: block; width: 62%; height: 136px; min-width: 0; min-height: 136px; margin: 0; padding: 0; flex: none; grid-template-columns: none; border: 1px solid rgb(26 22 19 / .1); border-radius: 18px; color: #1A1613; background: #FFFFFF; box-shadow: 0 10px 24px rgb(60 30 10 / .1), 0 2px 4px rgb(60 30 10 / .06); overflow: visible; text-align: left; transition: transform .22s cubic-bezier(.2,.8,.2,1), background-color .45s ease, color .45s ease, box-shadow .45s ease, border-color .22s ease; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(2) { top: 4%; right: auto; left: 0; background: #FFFFFF; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3) { top: 35%; right: 0; left: auto; background: #FFFFFF; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(4) { top: 66%; right: auto; left: 0; background: #FFFFFF; }
+.pp-loop .pp-step-list button.pp-winding-step.active { color: #fff; border-color: #F0522D; background: #F0522D; box-shadow: 0 14px 34px rgb(240 82 45 / .35); }
+.pp-loop .pp-step-list button.pp-winding-step:not(.active):hover, .pp-loop .pp-step-list button.pp-winding-step:not(.active):focus-visible { border-color: rgb(240 82 45 / .42); box-shadow: 0 14px 28px rgb(60 30 10 / .15), 0 2px 5px rgb(60 30 10 / .06); }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(2):not(.active):hover, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4):not(.active):hover { transform: translate(6px, -4px); }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3):not(.active):hover { transform: translate(-6px, -4px); }
+.pp-loop .pp-step-list button.pp-winding-step:active { transform: scale(.985); }
+.pp-loop .pp-step-list button.pp-winding-step:focus-visible { outline: 2px solid #F0522D; outline-offset: 4px; border-radius: 18px; }
+.pp-loop .pp-step-list button.pp-winding-step::before { display: none; }
+.pp-loop .pp-step-list button.pp-winding-step::after { display: none; }
+
+.pp-loop .pp-step-list button.pp-winding-step .pp-winding-notch { position: absolute; z-index: 0; top: 50%; width: 24px; height: 24px; border-radius: 5px; background: inherit; transform: translateY(-50%) rotate(45deg); }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-notch, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-notch { right: -11px; left: auto; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-notch { right: auto; left: -11px; }
+.pp-loop .pp-step-list button.pp-winding-step .pp-winding-icon-badge { position: absolute; z-index: 3; top: 50%; display: grid; width: 72px; height: 72px; place-items: center; border: 1px solid rgb(26 22 19 / .08); border-radius: 50%; color: #C2410C; background: #fff; box-shadow: 0 4px 12px rgb(60 30 10 / .14), inset 0 0 0 4px rgb(255 255 255 / .6); transform: translateY(-50%); transition: transform .22s cubic-bezier(.2,.8,.2,1), color .22s ease, box-shadow .45s ease; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-icon-badge, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-icon-badge { right: -36px; left: auto; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-icon-badge { right: auto; left: -36px; }
+.pp-loop .pp-step-list button.pp-winding-step.active .pp-winding-icon-badge { color: #F0522D; animation: pp-winding-badge-pop .45s cubic-bezier(.2,.8,.2,1); }
+.pp-loop .pp-step-list button.pp-winding-step:not(.active):hover .pp-winding-icon-badge { color: #F0522D; transform: translateY(-50%) rotate(8deg); }
+
+.pp-loop .pp-step-list button.pp-winding-step .pp-step-copy { position: absolute; z-index: 2; top: 50%; right: 78px; left: 28px; max-width: none; opacity: 1; transform: translateY(-50%); }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-step-copy { right: 28px; left: 78px; }
+.pp-loop .pp-step-list button.pp-winding-step .pp-step-copy b { display: block; color: inherit; font-family: var(--font-display), var(--sans); font-size: 19px; font-weight: 600; letter-spacing: -.02em; }
+.pp-loop .pp-step-list button.pp-winding-step .pp-step-copy small { display: block; max-width: 28ch; margin-top: 6px; color: #6B625A; font-size: 12px; line-height: 1.35; }
+.pp-loop .pp-step-list button.pp-winding-step.active .pp-step-copy small { color: rgb(255 255 255 / .8); }
+.pp-loop .pp-step-list button.pp-winding-step:not(.active):hover .pp-step-copy, .pp-loop .pp-step-list button.pp-winding-step:not(.active):focus-visible .pp-step-copy { opacity: 1; transform: translateY(-50%); }
+
+
+/* Keep the step numbers outside each card so the dotted curve stays visible in the gap. */
+.pp-loop .pp-step-list button.pp-winding-step .pp-winding-node-block { position: absolute; z-index: 2; top: 50%; width: 104px; height: 70px; transform: translateY(-50%); pointer-events: none; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-node-block, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-node-block { right: auto; left: calc(100% + 84px); text-align: left; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-node-block { right: calc(100% + 84px); left: auto; text-align: right; }
+.pp-loop .pp-step-list button.pp-winding-step .pp-winding-node { position: absolute; top: 50%; display: grid; width: 22px; height: 22px; place-items: center; border: 2px solid rgb(26 22 19 / .3); border-radius: 50%; background: #FAF6F0; transform: translateY(-50%); }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-node, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-node { right: auto; left: 0; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-node { right: 0; left: auto; }
+.pp-loop .pp-step-list button.pp-winding-step .pp-winding-node i { width: 6px; height: 6px; border-radius: 50%; background: rgb(26 22 19 / .3); }
+.pp-loop .pp-step-list button.pp-winding-step.active .pp-winding-node { border-color: #F0522D; background: #FAF6F0; box-shadow: 0 0 0 7px rgb(240 82 45 / .12); animation: pp-winding-node-pulse 2s ease-in-out infinite; }
+.pp-loop .pp-step-list button.pp-winding-step.active .pp-winding-node i { background: #F0522D; }
+.pp-loop .pp-step-list button.pp-winding-step:hover:not(.active) .pp-winding-node { border-color: rgb(240 82 45 / .6); background: rgb(240 82 45 / .3); }
+.pp-loop .pp-step-list button.pp-winding-step:hover:not(.active) .pp-winding-node i { background: #F0522D; }
+.pp-loop .pp-step-list button.pp-winding-step .pp-winding-step-label { display: block; color: rgb(26 22 19 / .45); font-family: var(--mono); font-size: 10px; letter-spacing: .12em; line-height: 1; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-step-label, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-step-label { margin-right: 0; margin-left: 0; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-step-label { margin-right: 0; margin-left: 0; }
+.pp-loop .pp-step-list button.pp-winding-step .pp-winding-node-block strong { display: block; color: rgb(240 82 45 / .35); font-family: var(--font-display), var(--sans); font-size: 52px; font-variant-numeric: tabular-nums; font-weight: 800; letter-spacing: -.06em; line-height: .9; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-node-block strong, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-node-block strong { margin-right: 0; margin-left: 0; }
+.pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-node-block strong { margin-right: 0; margin-left: 0; }
+.pp-loop .pp-step-list button.pp-winding-step:not(.active):hover .pp-winding-node-block strong, .pp-loop .pp-step-list button.pp-winding-step:not(.active):focus-visible .pp-winding-node-block strong { color: rgb(240 82 45 / .7); }
+.pp-loop .pp-step-list button.pp-winding-step.active .pp-winding-node-block strong { color: #F0522D; transform: scale(1.06); }
+.pp-loop .pp-step-list button.pp-winding-step.active .pp-winding-step-label { color: #F0522D; }
+
+.pp-loop:has(.pp-winding-step:hover) .pp-loop-demo { box-shadow: 0 26px 62px rgb(240 82 45 / .18); }
+
+@media (max-width: 1023px) {
+  .pp-loop .pp-step-list.pp-winding-list { height: 410px; min-height: 410px; padding: 0; }
+  .pp-loop .pp-step-list button.pp-winding-step { width: 66%; height: 84px; min-height: 84px; border-radius: 16px; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(2) { top: 3%; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(3) { top: 37%; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) { top: 71%; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-icon-badge { width: 52px; height: 52px; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-icon-badge, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-icon-badge { right: -26px; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-icon-badge { left: -26px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-step-copy { right: 58px; left: 20px; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-step-copy { right: 20px; left: 58px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-step-copy b { font-size: 16px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-step-copy small { max-width: 26ch; margin-top: 4px; font-size: 11px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node-block { width: 80px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node-block strong { font-size: 36px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node { width: 18px; height: 18px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node i { width: 5px; height: 5px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-step-label { font-size: 8px; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-node-block, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-node-block { left: calc(100% + 62px); }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-node-block { right: calc(100% + 62px); }
+}
+
+@media (max-width: 639px) {
+  .pp-loop .pp-step-list.pp-winding-list { height: 360px; min-height: 360px; }
+  .pp-loop .pp-step-list button.pp-winding-step { width: 70%; height: 76px; min-height: 76px; border-radius: 16px; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(2) { top: 3%; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(3) { top: 37%; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) { top: 71%; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-icon-badge { width: 52px; height: 52px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-icon-badge svg { width: 20px; height: 20px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-step-copy { right: 54px; left: 16px; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-step-copy { right: 16px; left: 54px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-step-copy b { font-size: 14px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-step-copy small { max-width: 22ch; margin-top: 3px; font-size: 10px; line-height: 1.25; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node-block { width: 64px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node-block strong { font-size: 32px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node { width: 16px; height: 16px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node i { width: 4px; height: 4px; }
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-step-label { font-size: 7px; }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(2) .pp-winding-node-block, .pp-loop .pp-step-list button.pp-winding-step:nth-child(4) .pp-winding-node-block { left: calc(100% + 34px); }
+  .pp-loop .pp-step-list button.pp-winding-step:nth-child(3) .pp-winding-node-block { right: calc(100% + 34px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-loop .pp-step-list button.pp-winding-step .pp-winding-icon-badge, .pp-loop .pp-step-list button.pp-winding-step .pp-winding-node { animation: none; }
+  .pp-loop .pp-step-list button.pp-winding-step, .pp-loop .pp-step-list button.pp-winding-step .pp-winding-icon-badge { transition-duration: .15s; }
+}
+
+/* Reveal timing: pills 120ms apart, badges after the pills. */
+.pp-loop .pp-step-list.pp-winding-list:not(.is-revealed) button.pp-winding-step { opacity: 0; pointer-events: none; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step { opacity: 1; transform: translateX(0); }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(2) { animation: pp-winding-step-reveal-left .5s cubic-bezier(.2,.8,.2,1) .12s; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(3) { animation: pp-winding-step-reveal-right .5s cubic-bezier(.2,.8,.2,1) .24s; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(4) { animation: pp-winding-step-reveal-left .5s cubic-bezier(.2,.8,.2,1) .36s; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step .pp-winding-icon-badge { opacity: 1; transform: translateY(-50%); }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(2):not(.active) .pp-winding-icon-badge, .pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(4):not(.active) .pp-winding-icon-badge { animation: pp-winding-badge-pop .45s cubic-bezier(.2,.8,.2,1) .76s, pp-winding-float 4s ease-in-out 1.21s infinite; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(3):not(.active) .pp-winding-icon-badge { animation: pp-winding-badge-pop .45s cubic-bezier(.2,.8,.2,1) .88s, pp-winding-float 4s ease-in-out 1.33s infinite; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step.active .pp-winding-icon-badge { animation: pp-winding-badge-pop .45s cubic-bezier(.2,.8,.2,1) .76s; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step .pp-winding-node-block strong { opacity: 1; transform: translateY(0); }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(2) .pp-winding-node-block strong, .pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(4) .pp-winding-node-block strong { animation: pp-winding-number-reveal .45s cubic-bezier(.2,.8,.2,1) .72s; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(3) .pp-winding-node-block strong { animation: pp-winding-number-reveal .45s cubic-bezier(.2,.8,.2,1) .84s; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(2).active .pp-winding-node-block strong, .pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(4).active .pp-winding-node-block strong { transform: translateY(0) scale(1.06); animation: pp-winding-active-number-reveal .45s cubic-bezier(.2,.8,.2,1) .72s; }
+.pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step:nth-child(3).active .pp-winding-node-block strong { transform: translateY(0) scale(1.06); animation: pp-winding-active-number-reveal .45s cubic-bezier(.2,.8,.2,1) .84s; }
+@keyframes pp-winding-step-reveal-left { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pp-winding-step-reveal-right { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pp-winding-number-reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pp-winding-active-number-reveal { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1.06); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step, .pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step .pp-winding-icon-badge, .pp-loop .pp-step-list.pp-winding-list.is-revealed button.pp-winding-step .pp-winding-node-block strong { animation: none; }
+}
