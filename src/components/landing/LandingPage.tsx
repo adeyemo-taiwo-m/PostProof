@@ -391,9 +391,11 @@ function BeforeAfter() {
   const [introPlaying, setIntroPlaying] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [hintVisible, setHintVisible] = useState(true);
   const [cursor, setCursor] = useState({ x: 50, y: 50, visible: false });
   const stageRef = useRef<HTMLDivElement>(null);
   const introFrame = useRef<number | null>(null);
+  const idleTimer = useRef<number | null>(null);
   const introPlayed = useRef(false);
   const userInteracted = useRef(false);
 
@@ -408,30 +410,61 @@ function BeforeAfter() {
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage || reducedMotion || !("IntersectionObserver" in window)) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry?.isIntersecting || introPlayed.current || userInteracted.current) return;
-      introPlayed.current = true;
+    const easeInOut = (progress: number) => progress < .5 ? 2 * progress * progress : 1 - ((-2 * progress + 2) ** 2) / 2;
+    const easeOut = (progress: number) => 1 - ((1 - progress) ** 3);
+    const runSweep = () => {
       setIntroPlaying(true);
       setValue(100);
       const started = performance.now();
       const animate = (now: number) => {
-        const progress = Math.min(1, (now - started) / 1600);
-        const eased = progress < .5 ? 2 * progress * progress : 1 - ((-2 * progress + 2) ** 2) / 2;
-        setValue(Math.round(100 - eased * 50));
-        if (progress < 1) introFrame.current = window.requestAnimationFrame(animate);
-        else setIntroPlaying(false);
+        const elapsed = now - started;
+        const total = 3600;
+        let nextValue = 50;
+        if (elapsed < 1600) {
+          nextValue = 100 - easeInOut(elapsed / 1600) * 100;
+        } else if (elapsed < 2800) {
+          nextValue = 0;
+        } else if (elapsed < total) {
+          nextValue = easeOut((elapsed - 2800) / 800) * 50;
+        }
+        setValue(Math.round(nextValue));
+        if (elapsed < total && !userInteracted.current) {
+          introFrame.current = window.requestAnimationFrame(animate);
+          return;
+        }
+        introFrame.current = null;
+        setValue(50);
+        setIntroPlaying(false);
+        if (!userInteracted.current) {
+          idleTimer.current = window.setTimeout(runSweep, 8000);
+        }
       };
       introFrame.current = window.requestAnimationFrame(animate);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting || introPlayed.current || userInteracted.current) return;
+      introPlayed.current = true;
+      runSweep();
       observer.disconnect();
     }, { threshold: .4 });
     observer.observe(stage);
-    return () => { observer.disconnect(); if (introFrame.current) window.cancelAnimationFrame(introFrame.current); };
+    return () => {
+      observer.disconnect();
+      if (introFrame.current !== null) window.cancelAnimationFrame(introFrame.current);
+      if (idleTimer.current !== null) window.clearTimeout(idleTimer.current);
+    };
   }, [reducedMotion]);
 
-  function interact(nextValue: number) {
+  function cancelMotion() {
     userInteracted.current = true;
-    if (introFrame.current) window.cancelAnimationFrame(introFrame.current);
+    setHintVisible(false);
     setIntroPlaying(false);
+    if (introFrame.current !== null) window.cancelAnimationFrame(introFrame.current);
+    if (idleTimer.current !== null) window.clearTimeout(idleTimer.current);
+  }
+
+  function interact(nextValue: number) {
+    cancelMotion();
     setValue(Math.max(0, Math.min(100, nextValue)));
   }
 
@@ -453,7 +486,8 @@ function BeforeAfter() {
       <div className="pp-after-layer"><DesignLayer mode={mode} /></div>
       <div className="pp-before-layer"><span className="pp-shot-status">9:41</span><span className="pp-shot-signal">▮▮▮</span><span className="pp-shot-crop">⌜</span><span className="pp-notification">1</span><div className="pp-chat-bubble">The kind of care you feel the difference in.</div><span className="pp-shot-toast">Screenshot saved</span><span className="pp-shot-file">Screenshot (14).png</span></div>
       <span className="pp-compare-seam" aria-hidden="true"><span className="pp-compare-ticks" /><span className="pp-slider-handle"><ArrowLeftRight size={18} /></span></span>
-      <label className="pp-slider-label" data-cursor="Drag"><span className="sr-only">Compare screenshot and polished graphic</span><input type="range" min="0" max="100" value={value} onChange={(event) => interact(Number(event.target.value))} onKeyDown={onKeyDown} onPointerDown={() => { userInteracted.current = true; setDragging(true); }} onPointerUp={() => setDragging(false)} onPointerCancel={() => setDragging(false)} aria-label="Compare before and after" aria-valuetext={`${value}% polished graphic`} /><span className="sr-only">Use left and right arrows to compare. Hold Shift for larger steps.</span></label>
+      <span className={`pp-compare-hint ${hintVisible ? "is-visible" : ""}`} aria-hidden="true"><ArrowLeftRight size={14} /> <span>Drag to compare</span></span>
+      <label className="pp-slider-label" data-cursor="Drag"><span className="sr-only">Compare screenshot and polished graphic</span><input type="range" min="0" max="100" value={value} onChange={(event) => interact(Number(event.target.value))} onKeyDown={onKeyDown} onPointerDown={() => { cancelMotion(); setDragging(true); }} onPointerUp={() => setDragging(false)} onPointerCancel={() => setDragging(false)} aria-label="Compare before and after" aria-valuetext={`${value}% polished graphic`} /><span className="sr-only">Use left and right arrows to compare. Hold Shift for larger steps.</span></label>
       <span className={`pp-compare-cursor ${cursor.visible ? "is-visible" : ""}`} aria-hidden="true">{dragging ? "" : "Drag"}</span>
       <span className="pp-compare-sparkle pp-compare-sparkle-a"><Sparkles size={16} /></span><span className="pp-compare-sparkle pp-compare-sparkle-b"><Sparkles size={12} /></span>
     </div>
