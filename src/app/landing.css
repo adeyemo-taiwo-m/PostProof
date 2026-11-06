@@ -302,3 +302,23 @@
   .pp-loop .pp-step-list button { width: auto; min-height: 126px; margin: 0; padding: 15px; border-radius: 16px; }
   .pp-loop .pp-step-list button:nth-child(even) { margin-left: 0; }
 }
+
+/* Desktop step path: cards alternate around the connector and keep their numbers outside. */
+.pp-loop .pp-step-list button.active::after { display: none; }
+.pp-loop .pp-step-list::before { inset: 4px 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 420' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0 C10 58 90 84 50 145 S10 235 50 292 S90 365 50 420' fill='none' stroke='%23C2410C' stroke-width='1.8' stroke-dasharray='1 9' stroke-linecap='round' opacity='.52'/%3E%3C/svg%3E"); }
+
+@media (min-width: 1024px) {
+  .pp-loop .pp-step-list { padding: 20px 14px; }
+  .pp-loop .pp-step-list button { position: relative; width: 76%; grid-template-columns: minmax(0, 1fr) 20px; overflow: visible; }
+  .pp-loop .pp-step-list button:nth-child(odd) { margin-right: auto; margin-left: 0; }
+  .pp-loop .pp-step-list button:nth-child(even) { margin-right: 0; margin-left: auto; }
+  .pp-loop .pp-step-list button::before { position: absolute; top: 50%; z-index: 2; width: 13px; height: 13px; border: 2px solid #C2410C; border-radius: 50%; content: ""; background: #FAF6F0; box-shadow: 0 0 0 5px rgb(250 246 240 / .8); transform: translateY(-50%); }
+  .pp-loop .pp-step-list button:nth-child(odd)::before { right: -39px; }
+  .pp-loop .pp-step-list button:nth-child(even)::before { left: -39px; }
+  .pp-loop .pp-step-list button.active::before { border-color: #F0522D; background: #F0522D; }
+  .pp-loop .pp-step-list button:not(.active) .pp-step-number, .pp-loop .pp-step-list button.active .pp-step-number { position: absolute; top: 50%; z-index: 3; width: auto; height: auto; border: 0; border-radius: 0; background: transparent; font-size: 27px; font-weight: 800; transform: translateY(-50%); }
+  .pp-loop .pp-step-list button:nth-child(odd) .pp-step-number { right: -104px; }
+  .pp-loop .pp-step-list button:nth-child(even) .pp-step-number { left: -104px; }
+  .pp-loop .pp-step-list button:not(.active) .pp-step-number { color: #C2410C; }
+  .pp-loop .pp-step-list button.active .pp-step-number { color: #F0522D; }
+}
