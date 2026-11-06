@@ -540,7 +540,7 @@
 .pp-best-words .pp-section-intro p span::after { position: absolute; right: 0; bottom: -3px; left: 0; height: 1px; content: ""; background: #E8765A; transform: scaleX(0); transform-origin: left; transition: transform .2s cubic-bezier(.2,.8,.2,1); }
 .pp-best-words .pp-section-intro p span:hover::after { transform: scaleX(1); }
 .pp-strike-word { position: relative; display: inline-block; color: #FAF6F0; }
-.pp-best-words .pp-strike-word { color: #FAF6F0; font-family: inherit; font-size: 1em; font-style: normal; font-weight: 800; }
+.pp-best-words .pp-strike-word { color: #FAF6F0; font-family: Georgia, serif; font-size: .9em; font-style: italic; font-weight: 400; }
 .pp-strike-word::after { position: absolute; right: -.04em; bottom: 43%; left: -.03em; height: 4px; content: ""; background: #F0522D; transform: scaleX(1); transform-origin: left; animation: pp-words-strike-in 1.2s cubic-bezier(.2,.8,.2,1) both; }
 
 .pp-best-words .pp-before-after-wrap { width: min(960px, 100%); max-width: none; margin: 0 auto 46px; }
