@@ -173,6 +173,10 @@
 .pp-loop-build-link:hover svg, .pp-loop-build-link:focus-visible svg { transform: translate(3px, -3px) rotate(45deg); }
 .pp-loop-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 72px; align-items: center; }
 .pp-step-list { gap: 0; }
+.pp-loop .pp-step-list { padding: 18px; border: 1px solid rgb(26 22 19 / .12); border-radius: 32px; background-image: linear-gradient(135deg, rgb(250 246 240 / .9), rgb(250 246 240 / .68)), url("/after-hero.jpg"); background-position: center; background-size: cover; box-shadow: 0 18px 42px rgb(60 30 10 / .1); }
+.pp-loop .pp-step-list button { background: rgb(250 246 240 / .08); }
+.pp-loop .pp-step-list button.active { background: rgb(255 255 255 / .44); }
+.pp-loop .pp-step-list button:not(.active):hover, .pp-loop .pp-step-list button:not(.active):focus-visible { background: rgb(255 255 255 / .28); }
 .pp-step-list button { position: relative; grid-template-columns: 64px minmax(0, 1fr) 20px; min-height: 124px; padding: 20px 12px; border-top-color: rgb(26 22 19 / .22); color: #6B625A; overflow: hidden; transition: color .22s cubic-bezier(.2,.8,.2,1), transform .22s cubic-bezier(.2,.8,.2,1), background-color .22s ease; }
 .pp-step-list button:last-child { border-bottom-color: rgb(26 22 19 / .22); }
 .pp-step-list button:focus-visible { outline: 2px solid #F0522D; outline-offset: 4px; border-radius: 8px; }
