@@ -309,6 +309,7 @@
 
 @media (min-width: 1024px) {
   .pp-loop .pp-step-list { padding: 20px 14px; }
+  .pp-loop .pp-step-list::before { opacity: .9; }
   .pp-loop .pp-step-list button { position: relative; width: 76%; grid-template-columns: minmax(0, 1fr) 20px; overflow: visible; }
   .pp-loop .pp-step-list button:nth-child(odd) { margin-right: auto; margin-left: 0; }
   .pp-loop .pp-step-list button:nth-child(even) { margin-right: 0; margin-left: auto; }
@@ -316,13 +317,13 @@
   .pp-loop .pp-step-list button::after { position: absolute; top: 50%; z-index: 0; width: 42px; height: 82px; border: 1.5px solid rgb(194 65 12 / .38); border-radius: 50%; content: ""; pointer-events: none; transform: translateY(-50%); }
   .pp-loop .pp-step-list button:nth-child(odd)::before { right: -39px; }
   .pp-loop .pp-step-list button:nth-child(even)::before { left: -39px; }
-  .pp-loop .pp-step-list button:nth-child(odd)::after { right: -22px; border-left-color: transparent; transform: translateY(-50%) rotate(-8deg); }
-  .pp-loop .pp-step-list button:nth-child(even)::after { left: -22px; border-right-color: transparent; transform: translateY(-50%) rotate(8deg); }
+  .pp-loop .pp-step-list button:nth-child(odd)::after { right: -22px; border-style: dashed; border-color: rgb(194 65 12 / .38); border-left-color: transparent; transform: translateY(-50%) rotate(-8deg); }
+  .pp-loop .pp-step-list button:nth-child(even)::after { left: -22px; border-style: dashed; border-color: rgb(194 65 12 / .38); border-right-color: transparent; transform: translateY(-50%) rotate(8deg); }
   .pp-loop .pp-step-list button.active::before { border-color: #F0522D; background: #F0522D; }
-  .pp-loop .pp-step-list button.active::after { display: block; border-color: rgb(240 82 45 / .68); }
+  .pp-loop .pp-step-list button.active::after { display: block; border-style: dashed; border-color: rgb(240 82 45 / .68); }
   .pp-loop .pp-step-list button:not(.active) .pp-step-number, .pp-loop .pp-step-list button.active .pp-step-number { position: absolute; top: 50%; z-index: 3; width: auto; height: auto; border: 0; border-radius: 0; background: transparent; font-size: 34px; font-weight: 800; letter-spacing: -.04em; transform: translateY(-50%); }
   .pp-loop .pp-step-list button:nth-child(odd) .pp-step-number { right: -104px; }
   .pp-loop .pp-step-list button:nth-child(even) .pp-step-number { left: -104px; }
-  .pp-loop .pp-step-list button:not(.active) .pp-step-number { color: #C2410C; }
-  .pp-loop .pp-step-list button.active .pp-step-number { color: #F0522D; }
+  .pp-loop .pp-step-list button:not(.active) .pp-step-number { color: #C2410C; opacity: .15; }
+  .pp-loop .pp-step-list button.active .pp-step-number { color: #F0522D; opacity: 1; }
 }
