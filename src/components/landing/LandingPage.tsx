@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowDownRight,
+  ArrowLeftRight,
   ArrowUp,
   ArrowUpRight,
   BadgeCheck,
@@ -24,6 +25,7 @@ import {
   MessageSquareHeart,
   MoveUpRight,
   Quote,
+  Sparkles,
   Link2,
   X,
 } from "lucide-react";
@@ -356,13 +358,107 @@ function WindingStepList({ activeStep, onSelect }: { activeStep: number; onSelec
   return <div ref={listRef} className={`pp-step-list pp-winding-list ${revealed ? "is-revealed" : ""}`} role="tablist" aria-label="How Postproof works"><span className="pp-winding-anchor" aria-hidden="true" />{loopSteps.map((item, index) => <StepPill key={item.title} item={item} index={index} active={activeStep === index} onSelect={onSelect} />)}</div>;
 }
 
-function BeforeAfter() {
+function LegacyBeforeAfter() {
   const [value, setValue] = useState(50);
   return <div className="pp-before-after-wrap"><div className="pp-before-after" style={{ "--reveal": `${value}%` } as React.CSSProperties}>
     <div className="pp-after-card"><span className="pp-demo-kicker">BOLD · SAMPLE</span><div className="pp-after-quote">“The kind of <i>care</i> you feel the difference in.”</div><span className="pp-after-person">— Maya R.</span></div>
     <div className="pp-before-shot"><span className="pp-shot-status">9:41</span><span className="pp-notification" /><div className="pp-chat-bubble">The kind of care you feel the difference in.</div><span className="pp-shot-file">Screenshot (14).png</span></div>
     <label className="pp-slider-label" data-cursor="Drag"><span className="sr-only">Compare screenshot and polished graphic</span><input type="range" min="0" max="100" value={value} onChange={(event) => setValue(Number(event.target.value))} aria-valuetext={`${value}% polished graphic`} /><span className="pp-slider-handle"><ArrowDownRight size={15} /></span></label>
   </div><div className="pp-before-after-legend"><span>Before</span><span><span className="pp-sample-tag">SAMPLE</span> After</span></div></div>;
+}
+
+function DesignLayer({ mode }: { mode: DesignMode }) {
+  return <div className={`pp-design-layer pp-design-${mode}`}>
+    <span className="pp-design-inner-line pp-design-inner-line-top" />
+    <span className="pp-design-inner-line pp-design-inner-line-bottom" />
+    <span className="pp-design-kicker">POSTPROOF <span aria-hidden="true">·</span> SAMPLE {designModes.indexOf(mode) + 1}/3</span>
+    <span className="pp-design-quote-mark" aria-hidden="true">&ldquo;</span>
+    <p className="pp-design-quote">The kind of <strong>care</strong> you feel the difference in.</p>
+    <span className="pp-design-signature">&mdash; Maya R.</span>
+    <span className="pp-design-rule" />
+    <span className="pp-design-stars" aria-label="Five stars">★★★★★</span>
+    <span className="pp-design-mark">P<span>p</span></span>
+  </div>;
+}
+
+type DesignMode = "editorial" | "bold" | "minimal";
+const designModes: DesignMode[] = ["editorial", "bold", "minimal"];
+
+function BeforeAfter() {
+  void LegacyBeforeAfter;
+  const [value, setValue] = useState(50);
+  const [mode, setMode] = useState<DesignMode>("editorial");
+  const [introPlaying, setIntroPlaying] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [cursor, setCursor] = useState({ x: 50, y: 50, visible: false });
+  const stageRef = useRef<HTMLDivElement>(null);
+  const introFrame = useRef<number | null>(null);
+  const introPlayed = useRef(false);
+  const userInteracted = useRef(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReducedMotion(media.matches);
+    sync();
+    media.addEventListener("change", sync);
+    return () => media.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || reducedMotion || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting || introPlayed.current || userInteracted.current) return;
+      introPlayed.current = true;
+      setIntroPlaying(true);
+      setValue(100);
+      const started = performance.now();
+      const animate = (now: number) => {
+        const progress = Math.min(1, (now - started) / 1600);
+        const eased = progress < .5 ? 2 * progress * progress : 1 - ((-2 * progress + 2) ** 2) / 2;
+        setValue(Math.round(100 - eased * 50));
+        if (progress < 1) introFrame.current = window.requestAnimationFrame(animate);
+        else setIntroPlaying(false);
+      };
+      introFrame.current = window.requestAnimationFrame(animate);
+      observer.disconnect();
+    }, { threshold: .4 });
+    observer.observe(stage);
+    return () => { observer.disconnect(); if (introFrame.current) window.cancelAnimationFrame(introFrame.current); };
+  }, [reducedMotion]);
+
+  function interact(nextValue: number) {
+    userInteracted.current = true;
+    if (introFrame.current) window.cancelAnimationFrame(introFrame.current);
+    setIntroPlaying(false);
+    setValue(Math.max(0, Math.min(100, nextValue)));
+  }
+
+  function moveCursor(event: React.PointerEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setCursor({ x: ((event.clientX - rect.left) / rect.width) * 100, y: ((event.clientY - rect.top) / rect.height) * 100, visible: true });
+  }
+
+  function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    const amount = event.shiftKey ? 20 : 5;
+    if (event.key === "ArrowLeft") { event.preventDefault(); interact(value - amount); }
+    if (event.key === "ArrowRight") { event.preventDefault(); interact(value + amount); }
+    if (event.key === "Home") { event.preventDefault(); interact(0); }
+    if (event.key === "End") { event.preventDefault(); interact(100); }
+  }
+
+  return <div className={`pp-before-after-wrap pp-compare-${mode} ${introPlaying ? "is-intro-playing" : ""} ${dragging ? "is-dragging" : ""}`}>
+    <div ref={stageRef} className="pp-before-after" style={{ "--reveal": `${value}%`, "--cursor-x": `${cursor.x}%`, "--cursor-y": `${cursor.y}%` } as React.CSSProperties} onPointerMove={moveCursor} onPointerEnter={() => setCursor((current) => ({ ...current, visible: true }))} onPointerLeave={() => setCursor((current) => ({ ...current, visible: false }))} onDoubleClick={() => interact(value < 50 ? 100 : 0)}>
+      <div className="pp-after-layer"><DesignLayer mode={mode} /></div>
+      <div className="pp-before-layer"><span className="pp-shot-status">9:41</span><span className="pp-shot-signal">▮▮▮</span><span className="pp-shot-crop">⌜</span><span className="pp-notification">1</span><div className="pp-chat-bubble">The kind of care you feel the difference in.</div><span className="pp-shot-toast">Screenshot saved</span><span className="pp-shot-file">Screenshot (14).png</span></div>
+      <span className="pp-compare-seam" aria-hidden="true"><span className="pp-compare-ticks" /><span className="pp-slider-handle"><ArrowLeftRight size={18} /></span></span>
+      <label className="pp-slider-label" data-cursor="Drag"><span className="sr-only">Compare screenshot and polished graphic</span><input type="range" min="0" max="100" value={value} onChange={(event) => interact(Number(event.target.value))} onKeyDown={onKeyDown} onPointerDown={() => { userInteracted.current = true; setDragging(true); }} onPointerUp={() => setDragging(false)} onPointerCancel={() => setDragging(false)} aria-label="Compare before and after" aria-valuetext={`${value}% polished graphic`} /><span className="sr-only">Use left and right arrows to compare. Hold Shift for larger steps.</span></label>
+      <span className={`pp-compare-cursor ${cursor.visible ? "is-visible" : ""}`} aria-hidden="true">{dragging ? "" : "Drag"}</span>
+      <span className="pp-compare-sparkle pp-compare-sparkle-a"><Sparkles size={16} /></span><span className="pp-compare-sparkle pp-compare-sparkle-b"><Sparkles size={12} /></span>
+    </div>
+    <div className="pp-before-after-legend"><span className={value > 55 ? "is-current" : ""}>Before</span><button type="button" className="pp-sample-switch" onClick={() => setMode((current) => designModes[(designModes.indexOf(current) + 1) % designModes.length])} aria-label={`Change sample design, currently ${designModes.indexOf(mode) + 1} of 3`}><span>SAMPLE {designModes.indexOf(mode) + 1}/3</span></button><span className={value <= 55 ? "is-current" : ""}>After</span></div>
+  </div>;
 }
 
 function StudioMock() {
@@ -476,7 +572,7 @@ export default function LandingPage() {
 
     <section className={`pp-loop pp-section pp-loop-step-${loopStep + 1}`} id="the-loop" data-section="loop"><div className="pp-container"><div className="pp-section-intro"><div><span className="pp-overline">THE SIMPLE LOOP</span><h2>Less admin.<br /><ProofText text="More proof." /></h2></div><div><p>Great work creates great stories. Postproof gives those stories a place to land—and gives you a graceful way to put them back into the world.</p><a className="pp-text-link" href="#link-claim">Build your collection link <ArrowUpRight size={16} /></a></div></div><div className="pp-loop-grid"><WindingStepList activeStep={loopStep} onSelect={(index) => setLoopStep(index)} /><LoopDemo key={loopStep} step={loopStep} paused={paused} /></div></div></section>
 
-    <section className="pp-best-words pp-section" id="why-postproof" data-section="best-words"><div className="pp-container"><div className="pp-section-intro pp-section-intro-light"><div><span className="pp-overline">THE HOME FOR YOUR BEST WORDS</span><h2>A nice message shouldn&apos;t live in a screenshot.</h2></div><div><p>Give your customer&apos;s words the care they deserve. A calm inbox, a clear approval flow, and graphics that feel designed—not generated.</p></div></div><BeforeAfter /><div className="pp-benefit-rows"><div><span>01</span><b>No more screenshot hunting</b><em>One tidy inbox.</em></div><div><span>02</span><b>No design queue for every kind word</b><em>Graphics in a click.</em></div><div><span>03</span><b>No AI-written customer stories</b><em>Real words only.</em></div></div><Link className="pp-button pp-button-coral" href="/signup">Make it yours <MoveUpRight size={17} /></Link></div></section>
+    <section className="pp-best-words pp-section" id="why-postproof" data-section="best-words"><div className="pp-container"><div className="pp-section-intro pp-section-intro-light"><div><span className="pp-overline">THE HOME FOR YOUR BEST WORDS</span><h2>A nice message shouldn&apos;t live<br /><ProofText text="in a screenshot" className="pp-strike-word" />.</h2></div><div><p>Give your customer&apos;s words the care they deserve. A <span>calm inbox</span>, a <span>clear approval flow</span>, and graphics that feel <span>designed</span>—not generated.</p></div></div><BeforeAfter /><div className="pp-benefit-rows"><div tabIndex={0}><span>01</span><b>No more screenshot hunting</b><em>One tidy inbox.</em><i aria-hidden="true" /></div><div tabIndex={0}><span>02</span><b>No design queue for every kind word</b><em>Graphics in a click.</em><i aria-hidden="true" /></div><div tabIndex={0}><span>03</span><b>No AI-written customer stories</b><em>Real words only.</em><i aria-hidden="true" /></div></div><Link className="pp-button pp-button-coral" href="/signup">Make it yours <MoveUpRight size={17} /></Link></div></section>
 
     <section className="pp-studio pp-section" data-section="studio"><div className="pp-container"><div className="pp-section-intro"><div><span className="pp-overline">YOUR STUDIO</span><h2>Good work deserves good proof.</h2></div><div><p>Try the review flow before you sign up. This is sample data, running entirely in your browser.</p></div></div><StudioMock /></div></section>
 
