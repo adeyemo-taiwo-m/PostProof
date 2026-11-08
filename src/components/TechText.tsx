@@ -17,6 +17,8 @@ export type TechTextProps = {
   align?: Align;
   color?: string;
   accentColor?: string;
+  highlightText?: string;
+  highlightColor?: string;
   reveal?: Reveal;
   reach?: number;
   softness?: number;
@@ -66,6 +68,8 @@ export default function TechText({
   align = "center",
   color = "currentColor",
   accentColor = "currentColor",
+  highlightText = "",
+  highlightColor = "",
   reveal = "letter",
   reach = 200,
   softness = 0.7,
@@ -128,6 +132,8 @@ export default function TechText({
       align,
       color,
       accentColor,
+      highlightText,
+      highlightColor,
       reveal,
       reach,
       softness,
@@ -148,12 +154,19 @@ export default function TechText({
       speed,
     });
 
+    const resolveColor = (value: string, computed: CSSStyleDeclaration, fallback: string) => {
+      if (isInherited(value)) return computed.color || fallback;
+      const variable = value.match(/^var\(\s*(--[\w-]+)\s*\)$/);
+      return variable ? computed.getPropertyValue(variable[1]).trim() || fallback : value;
+    };
+
     const getPalette = (settings: Settings) => {
       const computed = getComputedStyle(container);
+      const ink = resolveColor(settings.color, computed, "#0f0f0f");
       return {
-        ink: isInherited(settings.color) ? computed.color || "#0f0f0f" : settings.color,
-        accent: isInherited(settings.accentColor) ? computed.color || "#f2542d" : settings.accentColor,
-        background: computed.backgroundColor,
+        ink,
+        highlight: resolveColor(settings.highlightColor, computed, ink),
+        accent: resolveColor(settings.accentColor, computed, "#f2542d"),
       };
     };
 
@@ -224,11 +237,11 @@ export default function TechText({
       return distance < 44 ? closest : -1;
     };
 
-    const drawGlyph = (settings: Settings, glyph: Glyph, fill: string, outline: boolean) => {
+    const drawGlyph = (settings: Settings, glyph: Glyph, fill: string, outline: boolean, outlineColor: string) => {
       context.save();
       context.font = font;
       context.fillStyle = fill;
-      context.strokeStyle = fill;
+      context.strokeStyle = outlineColor;
       context.lineWidth = settings.strokeWidth * 2;
       context.lineJoin = "round";
       context.lineCap = "butt";
@@ -333,8 +346,11 @@ export default function TechText({
       glyphs.forEach((glyph, index) => {
         if (index >= visibleCount) return;
         const outline = settings.reveal === "letter" && index === activeIndex;
+        const highlightStart = settings.highlightText ? settings.text.indexOf(settings.highlightText) : -1;
+        const highlightEnd = highlightStart >= 0 ? highlightStart + Array.from(settings.highlightText).length : -1;
+        const fill = index >= highlightStart && index < highlightEnd ? palette.highlight : palette.ink;
         context.globalAlpha = settings.intro === "none" ? 1 : clamp(introProgress * 1.7 - index / Math.max(glyphs.length, 1) * .6, 0, 1);
-        drawGlyph(settings, glyph, palette.ink, outline);
+        drawGlyph(settings, glyph, fill, outline, palette.accent);
         context.globalAlpha = 1;
       });
       if (activeIndex >= 0 && glyphs[activeIndex]) {
