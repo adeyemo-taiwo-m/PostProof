@@ -850,3 +850,9 @@
 @media (max-width: 639px) {
   .pp-big-quote .scroll-reveal { margin: 24px 0 40px; font-size: clamp(43px, 13vw, 65px); }
 }
+
+/* Keep the sample section's contrast explicit against the coral surface. */
+.pp-big-quote { color: var(--paper); background: var(--coral-500); }
+.pp-big-quote .scroll-reveal { color: var(--paper); }
+.pp-big-quote .pp-demo-kicker { color: var(--ink); }
+.pp-big-quote .pp-attribution { color: var(--paper); }
