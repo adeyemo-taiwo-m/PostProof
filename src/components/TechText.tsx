@@ -425,7 +425,7 @@ export default function TechText({
       container.removeEventListener("pointerup", onPointerUp);
       container.removeEventListener("pointercancel", onPointerUp);
     };
-  }, [text, fontFamily, fontWeight, fontSize, letterSpacing, align, color, accentColor, reveal, reach, softness, dashLength, dashGap, lineStyle, strokeWidth, specks, selection, labels, draggable, bounce, clickKick, intro, introDuration, guides, sweep, speed]);
+  }, [text, fontFamily, fontWeight, fontSize, letterSpacing, align, color, accentColor, highlightText, highlightColor, reveal, reach, softness, dashLength, dashGap, lineStyle, strokeWidth, specks, selection, labels, draggable, bounce, clickKick, intro, introDuration, guides, sweep, speed]);
 
   return <div ref={containerRef} className={`tech-text ${className}`.trim()} style={style} role="img" aria-label={text}><canvas ref={canvasRef} className="tech-text-canvas" /></div>;
 }
