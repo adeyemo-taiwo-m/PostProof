@@ -32,9 +32,10 @@ function BlueprintGrid({ paused, reducedMotion, pointerRef, rippleRef }: { pause
       frame = 0;
       if (destroyed || !visible) return;
       const spacing = width < 768 ? 44 : 54;
-      const columns = Math.max(4, Math.floor(width / spacing));
+      const horizontalPadding = width < 768 ? 18 : 24;
+      const columns = Math.max(4, Math.ceil((width - horizontalPadding * 2) / spacing) + 1);
       const rows = Math.max(4, Math.floor(height / spacing));
-      const startX = width < 768 ? width * .28 : width * .57;
+      const startX = horizontalPadding;
       const startY = width < 768 ? height * .42 : height * .15;
       const pointer = pointerRef.current;
       const ripple = rippleRef.current;
