@@ -1,0 +1,7 @@
+.scroll-reveal { margin: 20px 0; }
+.scroll-reveal-text { display: block; font-size: clamp(1.6rem, 4vw, 3rem); line-height: 1.5; font-weight: 600; }
+.scroll-reveal-word, .scroll-reveal-piece { display: inline-block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal-word, .scroll-reveal-piece { opacity: 1 !important; filter: none !important; transform: none !important; clip-path: none !important; }
+}

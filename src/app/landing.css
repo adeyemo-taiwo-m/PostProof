@@ -842,3 +842,11 @@
   .collection-input-curved-shell.is-empty-flash { animation: none; }
   .collection-qr-slot { transition-duration: 150ms; }
 }
+
+/* The sample quote uses the shared GSAP reveal while keeping the section's type scale. */
+.pp-big-quote .scroll-reveal { max-width: 1000px; margin: 30px 0 50px; color: inherit; font-family: var(--font-display), var(--sans); font-size: clamp(44px, 7vw, 102px); font-weight: 700; letter-spacing: -.045em; line-height: .97; }
+.pp-big-quote .scroll-reveal-text { font-size: inherit; font-weight: inherit; line-height: inherit; }
+
+@media (max-width: 639px) {
+  .pp-big-quote .scroll-reveal { margin: 24px 0 40px; font-size: clamp(43px, 13vw, 65px); }
+}

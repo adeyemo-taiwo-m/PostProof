@@ -32,6 +32,7 @@ import WarpText from "@/components/WarpText";
 import DarkVeil from "@/components/DarkVeil";
 import StudioSection from "@/components/landing/StudioSection";
 import CollectionLinkSection from "@/components/landing/CollectionLinkSection";
+import ScrollReveal from "@/components/ScrollReveal";
 
 type Format = "4:5" | "1:1" | "9:16";
 type Template = "Minimal" | "Bold" | "Editorial";
@@ -485,12 +486,16 @@ function BeforeAfter() {
 }
 
 } */
-function BigQuote() {
+/* function LegacyBigQuote() {
   const words = "It finally feels like the work I do, not another template someone handed me.".split(" ");
   const [visible, setVisible] = useState(0);
   const ref = useRef<HTMLElement>(null);
   useEffect(() => { const onScroll = () => { if (!ref.current) return; const rect = ref.current.getBoundingClientRect(); const progress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height * .6))); setVisible(Math.floor(progress * (words.length + 3))); }; onScroll(); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, [words.length]);
   return <section className="pp-big-quote" ref={ref} data-section="quote"><div className="pp-quote-corner pp-quote-corner-left">“</div><div className="pp-quote-corner pp-quote-corner-right">“</div><div className="pp-quote-marquee">“　“　“　“　“　“　“　“　“　“　“</div><div className="pp-big-quote-inner"><span className="pp-demo-kicker">A SAMPLE OF WHAT YOU COULD SHARE</span><blockquote>{words.map((word, index) => <span key={`${word}-${index}`} style={{ opacity: visible > index ? 1 : .2 }}>{word} </span>)}</blockquote><div className="pp-attribution"><span className="pp-quote-avatar">A</span><span><b>Ayo, founder</b><small>Independent creative studio</small></span><span className="pp-sample-tag">SAMPLE</span></div></div></section>;
+} */
+
+function BigQuote() {
+  return <section className="pp-big-quote" data-section="quote"><div className="pp-quote-corner pp-quote-corner-left">&ldquo;</div><div className="pp-quote-corner pp-quote-corner-right">&ldquo;</div><div className="pp-quote-marquee">&ldquo; &ldquo; &ldquo; &ldquo; &ldquo; &ldquo; &ldquo; &ldquo; &ldquo; &ldquo;</div><div className="pp-big-quote-inner"><span className="pp-demo-kicker">A SAMPLE OF WHAT YOU COULD SHARE</span><ScrollReveal containerClassName="pp-big-quote-reveal" textClassName="pp-big-quote-reveal-text" highlightColor="#FFD0C2" mode="scrub" splitBy="words" effect="rise" stagger={0.065} smoothing={0.08} baseOpacity={0.14} baseRotation={2.5} baseOffset={10} enableBlur blurStrength={4} rotationEnd="bottom 72%" wordAnimationEnd="bottom 34%">It finally feels like the work I do, not another template someone handed me.</ScrollReveal><div className="pp-attribution"><span className="pp-quote-avatar">A</span><span><b>Ayo, founder</b><small>Independent creative studio</small></span><span className="pp-sample-tag">SAMPLE</span></div></div></section>;
 }
 
 export default function LandingPage() {
