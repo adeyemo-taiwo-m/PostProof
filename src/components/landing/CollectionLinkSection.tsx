@@ -204,7 +204,6 @@ function LinkPill({ state, reducedMotion, onSlug, onCopy, onRealInteraction }: {
           <SlugText key={slug} slug={slug} editing={editing} onBeginEdit={() => { onRealInteraction(); setEditing(true); }} onCommit={(value) => { setEditing(false); onSlug(value); }} reducedMotion={reducedMotion} />
         </button>
         <div className="collection-link-actions"><AvailabilityBadge availability={state.availability} slug={slug} onSuggestion={() => onSlug(`${slug}-co`)} /><CopyButton disabled={!slug} copied={state.copied} onClick={onCopy} /></div>
-        <span className="collection-link-tooltip">Click to copy</span>
       </motion.div>
       <ConfettiBurst pulse={state.copyPulse} />
     </div>
