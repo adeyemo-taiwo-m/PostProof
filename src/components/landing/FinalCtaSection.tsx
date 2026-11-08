@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { ArrowUp, ArrowUpRight, Check } from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import ProofText from "@/components/ProofText";
+import TechText from "@/components/TechText";
 
 const FINAL_TIMING = {
   // Timing: pinned testimonial card visibility in milliseconds.
@@ -81,8 +82,7 @@ function Microcopy({ entered }: { entered: boolean }) {
 }
 
 function WordmarkHero({ entered, onBackToTop }: { entered: boolean; onBackToTop: () => void }) {
-  const word = "Postproof";
-  return <div className={`final-wordmark-wrap ${entered ? "is-entered" : ""}`}><button type="button" className="final-wordmark" onClick={onBackToTop} aria-label="Postproof — back to top"><span className="final-wordmark-quote" aria-hidden="true">&ldquo;</span><span className="final-wordmark-letters">{Array.from(word).map((letter, index) => <span key={`${letter}-${index}`} style={{ "--letter-index": index } as CSSProperties}>{letter}</span>)}</span></button><div className="final-wordmark-reflection" aria-hidden="true">{word}</div></div>;
+  return <div className={`final-wordmark-wrap ${entered ? "is-entered" : ""}`} role="button" tabIndex={0} aria-label="Postproof — back to top" onClick={onBackToTop} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onBackToTop(); } }}><TechText text="Postproof" fontWeight={800} fontSize={420} letterSpacing={-.1} align="left" color="#0f0f0f" accentColor="#F2542D" reveal="letter" dashLength={4} dashGap={2} specks={15} selection labels={false} draggable={false} clickKick intro="none" guides={false} sweep speed={.7} className="final-tech-text" /></div>;
 }
 
 function FooterRow({ onBackToTop }: { onBackToTop: () => void }) {

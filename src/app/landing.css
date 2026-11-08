@@ -1086,22 +1086,22 @@
   display: none;
 }
 .final-wordmark-wrap::before {
+  display: none;
+  content: none;
+  animation: none;
+}
+.final-tech-text {
   position: absolute;
   z-index: 1;
-  right: auto;
-  bottom: -.08em;
-  left: -3%;
+  inset: 0;
+  width: 100%;
+  height: 145%;
   color: #0f0f0f;
-  content: "Postproof";
-  font-family: var(--font-display), var(--sans);
-  font-size: clamp(210px, 28vw, 460px);
-  font-weight: 800;
-  letter-spacing: -.1em;
-  line-height: .75;
-  pointer-events: none;
-  animation: final-wordmark-drift 9s ease-in-out infinite alternate;
-  will-change: transform;
-  white-space: nowrap;
+  transform: translateY(14%);
+}
+.final-tech-text .tech-text-canvas {
+  width: 100%;
+  height: 100%;
 }
 .final-wordmark {
   z-index: 2;
@@ -1115,15 +1115,5 @@
 
 @media (max-width: 639px) {
   .final-wordmark-wrap { height: 168px; margin-top: 16px; }
-  .final-wordmark-wrap::before { bottom: -.08em; font-size: clamp(150px, 28vw, 260px); }
   .final-wordmark { font-size: clamp(112px, 22vw, 190px); transform: translate(-5%, 48%); }
-}
-
-@keyframes final-wordmark-drift {
-  from { transform: translate3d(-3%, 0, 0); }
-  to { transform: translate3d(5%, 0, 0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .final-wordmark-wrap::before { animation: none; }
 }
