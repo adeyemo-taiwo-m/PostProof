@@ -166,12 +166,17 @@ p { text-wrap: pretty; }
 .auth-visual-note span { color: #fff4e69e; font-family: var(--mono); font-size: 8px; letter-spacing: .08em; }
 .auth-visual-note strong { font-family: var(--font-display), var(--sans); font-size: 22px; font-weight: 600; letter-spacing: -.04em; }
 .auth-content { display: flex; min-width: 0; flex-direction: column; padding: clamp(27px, 4vw, 55px) clamp(25px, 6vw, 78px); }
-.auth-brand { width: auto; margin: 0; }
+.auth-brand { display: flex; width: auto; align-items: center; margin: 0; }
+.auth-brand .wordmark { align-items: center; color: var(--ink); }
+.auth-brand .wordmark-name { align-items: baseline; color: var(--ink); }
+.auth-brand .wordmark-name > span:first-child { color: var(--ink); }
+.auth-brand .wordmark-proof-text { color: var(--primary); }
 .auth-card { width: min(430px, 100%); margin: auto; padding: 54px 0 30px; border: 0; background: transparent; box-shadow: none; }
 .auth-card h1 { max-width: 430px; margin: 16px 0 14px; font-size: clamp(32px, 4vw, 44px); line-height: 1.04; }
 .auth-copy { max-width: 390px; margin-bottom: 35px; font-size: 14px; line-height: 1.65; }
 .auth-card .stack-form { gap: 17px; }
 .auth-card .stack-form input { background: #fffefa; }
+.auth-card .stack-form input::placeholder { color: var(--ink); opacity: .36; }
 .auth-card .button { margin-top: 3px; }
 .auth-card .form-links, .auth-card .form-footnote { font-size: 11px; line-height: 1.5; }
 
@@ -196,4 +201,39 @@ p { text-wrap: pretty; }
   .auth-visual-note { display: none; }
   .auth-card { padding-top: 36px; }
   .auth-card h1 { font-size: 32px; }
+}
+
+/* Auth page surface and motion refinements */
+.auth-page { padding: clamp(20px, 4vw, 56px); background: #fff; }
+.auth-frame { padding: 0; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.auth-visual-image { background-image: linear-gradient(145deg, #2c130f22, #f9875b1c), url('/after-hero.jpg'); background-repeat: no-repeat; background-position: center, 50% 44%; background-size: cover, 112% auto; animation: auth-visual-image-drift 16s ease-in-out infinite; will-change: background-position; }
+.auth-visual-glass-one { animation: auth-visual-glass-float 9s ease-in-out infinite; will-change: transform; }
+.auth-visual-orb { animation: auth-visual-orb-float 7s ease-in-out infinite; will-change: transform; }
+
+@keyframes auth-visual-image-drift {
+  0%, 100% { background-position: center, 50% 44%; }
+  50% { background-position: center, 50% 58%; }
+}
+
+@keyframes auth-visual-glass-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -11px, 0); }
+}
+
+@keyframes auth-visual-orb-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-7px, -13px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-visual-image, .auth-visual-glass-one, .auth-visual-orb { animation: none; }
+}
+
+/* Pointer response for the glass accents */
+.auth-visual-glass-one, .auth-visual-glass-two { transition: transform 220ms cubic-bezier(.22, 1, .36, 1); will-change: transform; }
+.auth-visual-glass-one { animation: none; transform: translate3d(var(--glass-one-x, 0px), var(--glass-one-y, 0px), 0); }
+.auth-visual-glass-two { transform: translate3d(var(--glass-two-x, 0px), var(--glass-two-y, 0px), 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-visual-glass-one, .auth-visual-glass-two { transform: none; transition: none; }
 }
