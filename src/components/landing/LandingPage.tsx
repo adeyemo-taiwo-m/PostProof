@@ -1809,7 +1809,7 @@ export default function LandingPage() {
                   Create your link <ArrowUpRight aria-hidden="true" />
                 </Link>
               </MagneticButton>
-              <Button asChild variant="secondary" size="md">
+              <Button asChild variant="secondary" size="xl" shape="pill">
                 <a href="#the-loop">
                   See how it works <ArrowDown aria-hidden="true" />
                 </a>
