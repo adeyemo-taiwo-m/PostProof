@@ -22,8 +22,10 @@
   transition: background-color .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease, opacity .15s ease;
 }
 
+.ui-button-shine { position: absolute; z-index: 1; inset: 0; pointer-events: none; opacity: 0; background: linear-gradient(112deg, transparent 22%, rgb(255 255 255 / .28) 50%, transparent 78%); transform: translateX(-120%); }
+.ui-button:hover .ui-button-shine, .ui-button:focus-visible .ui-button-shine { opacity: 1; animation: ui-button-shine .75s ease-out both; }
 .ui-button > svg { width: var(--ui-button-icon-size); height: var(--ui-button-icon-size); flex: 0 0 auto; pointer-events: none; }
-.ui-button-label, .ui-button > svg { position: relative; z-index: 1; }
+.ui-button-label, .ui-button > svg { position: relative; z-index: 2; }
 .ui-button-spinner { animation: ui-button-spin .8s linear infinite; }
 .ui-button:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
 .on-ink .ui-button:focus-visible { box-shadow: var(--shadow-focus-dark); }
@@ -97,6 +99,7 @@
 .ui-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 @keyframes ui-button-spin { to { transform: rotate(360deg); } }
+@keyframes ui-button-shine { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
 
 @media (pointer: coarse) {
   .ui-button-size-sm { min-height: 40px; }
@@ -111,7 +114,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ui-button, .ui-button::before, .ui-button::after, .ui-magnetic-button { transition: none !important; }
+  .ui-button, .ui-button::before, .ui-button::after, .ui-button-shine, .ui-magnetic-button { transition: none !important; animation: none !important; }
   .ui-button:active { transform: none; }
 }
 

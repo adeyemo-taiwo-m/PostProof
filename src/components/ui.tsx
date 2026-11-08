@@ -82,11 +82,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
   if (asChild) {
     const child = React.Children.only(children) as React.ReactElement<Record<string, unknown>>;
     const childProps = child.props;
-    const childContent = React.Children.map(childProps.children as React.ReactNode, (content) => (
-      typeof content === "string" || typeof content === "number"
-        ? <span className="ui-button-label">{content}</span>
-        : content
-    ));
+    const childContent = <>
+      <span className="ui-button-shine" aria-hidden="true" />
+      {React.Children.map(childProps.children as React.ReactNode, (content) => (
+        typeof content === "string" || typeof content === "number"
+          ? <span className="ui-button-label">{content}</span>
+          : content
+      ))}
+    </>;
     const childOnClick = childProps.onClick as ((event: React.MouseEvent<HTMLElement>) => void) | undefined;
     return React.cloneElement(child, {
       ...props,
@@ -133,6 +136,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
         onPointerLeave?.(event);
       }}
     >
+      <span className="ui-button-shine" aria-hidden="true" />
       {loading ? <Loader2 aria-hidden="true" className="ui-button-spinner" /> : leftIcon}
       <span className="ui-button-label">{children}</span>
       {!loading && rightIcon}
