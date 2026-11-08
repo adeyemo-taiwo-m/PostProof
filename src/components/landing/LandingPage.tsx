@@ -1724,7 +1724,7 @@ export default function LandingPage() {
           <a href="#why-postproof">Why Postproof</a>
         </div>
         <div className="pp-nav-actions">
-          <Button asChild variant="ghost" size="md">
+          <Button asChild variant="secondary" size="md">
             <Link href="/login">Log in</Link>
           </Button>
           <MagneticButton asChild variant="primary" size="md" shape="pill">
@@ -1760,7 +1760,7 @@ export default function LandingPage() {
             <a href="#why-postproof" onClick={() => setMenuOpen(false)}>
               Why Postproof
             </a>
-            <Button asChild variant="inverse" size="md">
+            <Button asChild variant="secondary" size="md">
               <Link href="/login">Log in</Link>
             </Button>
             <MagneticButton asChild variant="primary" size="md" shape="pill">
