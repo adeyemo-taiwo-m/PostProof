@@ -18,6 +18,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DragEvent, KeyboardEvent, PointerEvent } from "react";
 import ProofText from "@/components/ProofText";
+import { Button } from "@/components/ui";
 
 type StudioStatus = "Pending" | "Approved";
 type StudioFilter = "All" | "Pending" | "Approved";
@@ -470,7 +471,7 @@ function Toast({ toast }: { toast: StudioState["toast"] }) {
 }
 
 function ResetButton({ refreshing, onReset }: { refreshing: boolean; onReset: () => void }) {
-  return <motion.button type="button" className="studio-reset-button" onClick={onReset} whileTap={{ scale: 0.97 }}><RefreshCw size={14} className={refreshing ? "is-spinning" : ""} /> Reset demo</motion.button>;
+  return <Button type="button" variant="primary" size="md" shape="pill" className="studio-reset-button" leftIcon={<RefreshCw size={14} className={refreshing ? "is-spinning" : ""} />} onClick={onReset}>Reset demo</Button>;
 }
 
 function copyText(value: string) {
