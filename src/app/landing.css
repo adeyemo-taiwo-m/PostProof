@@ -1098,6 +1098,13 @@
 .pp-nav-actions > a:first-child {
   color: var(--primary);
 }
+
+/* The hero nav uses the text wordmark; keep its links quiet and secondary. */
+.pp-nav .pp-wordmark-mark,
+.pp-mobile-sheet .pp-wordmark-mark { display: none; }
+.pp-nav .pp-wordmark { gap: 0; color: var(--ink); }
+.pp-nav-links a,
+.pp-nav-actions > a:first-child { color: var(--muted); }
 .collection-kind svg path {
   stroke: var(--primary);
 }
