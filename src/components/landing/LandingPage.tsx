@@ -17,7 +17,6 @@ import {
   Clock3,
   Copy,
   Download,
-  ImagePlus,
   Camera,
   Mail,
   Menu,
@@ -34,6 +33,7 @@ import ProofText from "@/components/ProofText";
 import CurvedInput from "@/components/CurvedInput";
 import WarpText from "@/components/WarpText";
 import DarkVeil from "@/components/DarkVeil";
+import StudioSection from "@/components/landing/StudioSection";
 
 type Format = "4:5" | "1:1" | "9:16";
 type Template = "Minimal" | "Bold" | "Editorial";
@@ -54,12 +54,6 @@ const loopSteps = [
 const LOOP_DURATION = 6000;
 const LOOP_SLUG = "moonwell";
 const LOOP_QUOTE = "The kind of care you feel the difference in.";
-
-const studioReviews = [
-  { name: "Ayo, founder", text: "The work speaks for itself now.", status: "Approved", tone: "sage" },
-  { name: "Jane O.", text: "Thoughtful from the first call to the last.", status: "Pending", tone: "coral" },
-  { name: "Maya R.", text: "The care you feel the difference in.", status: "Approved", tone: "blue" },
-];
 
 const shareOptions = [
   { label: "WhatsApp", icon: MessageCircle },
@@ -495,7 +489,7 @@ function BeforeAfter() {
   </div>;
 }
 
-function StudioMock() {
+/* function StudioMock() {
   const [approved, setApproved] = useState(false);
   const [filter, setFilter] = useState("All");
   const [template, setTemplate] = useState<Template>("Bold");
@@ -503,6 +497,7 @@ function StudioMock() {
   return <div className="pp-studio-stage"><div className="pp-studio-sticker">TRY ME</div><div className="pp-studio-browser"><div className="pp-browser-chrome"><span /><span /><span /><b>postproof.app/dashboard</b></div><div className="pp-studio-content"><div className="pp-studio-head"><div><span className="pp-demo-kicker">YOUR STUDIO · SAMPLE DATA</span><h3>Good work deserves good proof.</h3></div><span className="pp-studio-avatar">M</span></div><div className="pp-stats-row"><div><span>Total</span><b>24</b></div><div><span>Waiting for review</span><b>{approved ? 5 : 6}</b></div><div><span>Approved to share</span><b>{approved ? 19 : 18}</b></div></div><div className="pp-studio-body"><div className="pp-review-list"><div className="pp-filter-row">{["All", "Pending", "Approved"].map((item) => <button key={item} className={filter === item ? "active" : ""} type="button" onClick={() => setFilter(item)}>{item}</button>)}</div>{shown.map((review) => <div className="pp-review-item" key={review.name}><span className={`pp-review-avatar ${review.tone}`}>{review.name[0]}</span><span><b>{review.name}</b><small>{review.text}</small></span><span className={`pp-status-text ${review.name === "Jane O." && approved ? "is-approved" : review.status === "Approved" ? "is-approved" : ""}`}>{review.name === "Jane O." && approved ? "Approved" : review.status}</span>{review.name === "Jane O." && !approved && <button className="pp-review-approve" type="button" onClick={() => setApproved(true)} aria-label="Approve Jane O testimonial"><Check size={14} /></button>}</div>)}</div><div className="pp-studio-graphic">{approved ? <><span className="pp-demo-kicker">CREATE GRAPHIC</span><div className={`pp-mini-graphic pp-mini-${template.toLowerCase()}`}><span>“</span><b>The kind of care<br />you feel the<br />difference in.</b><small>— Maya R.</small></div><div className="pp-mini-tabs">{(["Minimal", "Bold", "Editorial"] as Template[]).map((item) => <button key={item} className={template === item ? "active" : ""} type="button" onClick={() => setTemplate(item)}>{item}</button>)}</div></> : <><ImagePlus size={22} /><b>Approve a sample<br />to create a graphic</b></>}</div></div></div></div><button className="pp-reset-demo" type="button" onClick={() => { setApproved(false); setFilter("All"); }}>Reset demo</button></div>;
 }
 
+} */
 function BigQuote() {
   const words = "It finally feels like the work I do, not another template someone handed me.".split(" ");
   const [visible, setVisible] = useState(0);
@@ -608,7 +603,7 @@ export default function LandingPage() {
 
     <section className="pp-best-words pp-section" id="why-postproof" data-section="best-words"><div className="pp-container"><div className="pp-section-intro pp-section-intro-light"><div><span className="pp-overline">THE HOME FOR YOUR BEST WORDS</span><h2>A nice message shouldn&apos;t live<br /><ProofText text="in a screenshot" className="pp-strike-word" />.</h2></div><div><p>Give your customer&apos;s words the care they deserve. A <span>calm inbox</span>, a <span>clear approval flow</span>, and graphics that feel <span>designed</span>—not generated.</p></div></div><BeforeAfter /><div className="pp-benefit-rows"><div tabIndex={0}><span>01</span><b>No more screenshot hunting</b><em>One tidy inbox.</em><i aria-hidden="true" /></div><div tabIndex={0}><span>02</span><b>No design queue for every kind word</b><em>Graphics in a click.</em><i aria-hidden="true" /></div><div tabIndex={0}><span>03</span><b>No AI-written customer stories</b><em>Real words only.</em><i aria-hidden="true" /></div></div><Link className="pp-button pp-button-coral" href="/signup">Make it yours <MoveUpRight size={17} /></Link></div></section>
 
-    <section className="pp-studio pp-section" data-section="studio"><div className="pp-container"><div className="pp-section-intro"><div><span className="pp-overline">YOUR STUDIO</span><h2>Good work deserves good proof.</h2></div><div><p>Try the review flow before you sign up. This is sample data, running entirely in your browser.</p></div></div><StudioMock /></div></section>
+    <StudioSection />
 
     <section className="pp-link-claim pp-section" id="link-claim" data-section="link"><div className="pp-container pp-link-claim-inner"><span className="pp-overline">YOUR COLLECTION LINK</span><h2>Make it easy to say something kind.</h2><label className="pp-business-input"><span>What&apos;s your business called?</span><input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Bright Smiles Studio" /></label><div className="pp-url-pill" data-cursor="Copy"><span>postproof.app/t/</span><b>{slug}</b><button type="button" onClick={copyLink} aria-label="Copy your Postproof collection link">{copied ? <><Check size={18} /> Copied</> : <><Copy size={18} /> Copy</>}</button></div><p className="pp-copy-announcement" aria-live="polite">{copied ? "Link copied. Your testimonial link is ready to share." : ""}</p><div className="pp-share-row"><span>Share it where people already talk to you</span>{shareOptions.map(({ label, icon: Icon }) => <button key={label} type="button" className={shareChoice === label ? "active" : ""} onClick={() => setShareChoice(label)}><Icon size={16} />{label}</button>)}</div>{shareChoice && <p className="pp-share-note" role="status">You&apos;ll do this from your dashboard.</p>}</div></section>
 
