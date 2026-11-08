@@ -138,7 +138,7 @@
 .pp-hero-typed { min-width: 18ch; color: inherit; white-space: nowrap; }
 .pp-hero-warp.warp-text { width: 100%; min-height: 1.95em; height: 1.95em; overflow: visible; vertical-align: baseline; }
 .pp-hero-warp.warp-text { margin: 0; padding: 0; text-align: left; text-indent: 0; }
-.pp-wordmark-proof { color: var(--coral); }
+.pp-wordmark-proof { color: var(--primary); }
 .pp-proof-text { color: var(--primary); font-family: Georgia, serif; font-size: .9em; font-style: italic; font-weight: 400; }
 .pp-proof-text-typed { color: inherit; white-space: nowrap; }
 .pp-wordmark-mark, .pp-button-coral, .pp-button-coral:hover, .pp-card-middle, .pp-quote-card.pp-card-coral, .pp-approval-stamp, .pp-copy-action, .pp-approve-small, .pp-phone-submit, .pp-review-approve, .pp-studio-sticker, .pp-url-pill, .pp-url-pill button, .pp-slider-handle, .pp-big-quote, .pp-before-after .pp-after-card { color: var(--paper); }
@@ -1102,6 +1102,25 @@
 .final-tech-text .tech-text-canvas {
   width: 100%;
   height: 100%;
+}
+
+/* Keep every animated proof accent and the primary desktop navigation on brand. */
+.pp-proof-text,
+.pp-proof-text-typed,
+.pp-wordmark-proof,
+.final-proof-text,
+.collection-kind > .pp-proof-text {
+  color: var(--primary) !important;
+}
+.pp-nav-links a,
+.pp-nav-actions > a:first-child {
+  color: var(--primary);
+}
+.collection-kind svg path {
+  stroke: var(--primary);
+}
+.collection-kind .collection-heart {
+  color: var(--primary);
 }
 .final-wordmark {
   z-index: 2;

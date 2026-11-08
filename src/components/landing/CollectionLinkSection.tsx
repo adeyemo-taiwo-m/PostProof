@@ -19,6 +19,7 @@ import {
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { CSSProperties, PointerEvent } from "react";
 import CurvedInput from "@/components/CurvedInput";
+import ProofText from "@/components/ProofText";
 
 type Channel = "WhatsApp" | "Instagram" | "Email" | "SMS";
 type Availability = "idle" | "checking" | "available" | "taken";
@@ -129,7 +130,7 @@ function SectionHeader({ revealed }: { revealed: boolean }) {
   return (
     <div className="collection-header">
       <motion.span className="collection-eyebrow" initial={{ opacity: 0 }} animate={revealed ? { opacity: 1 } : undefined} transition={{ duration: 0.45 }}><i aria-hidden="true" />YOUR COLLECTION LINK</motion.span>
-      <motion.h2 id="collection-heading" className="collection-heading" initial={{ opacity: 0, y: 18 }} animate={revealed ? { opacity: 1, y: 0 } : undefined} transition={{ duration: 0.6, delay: 0.08, ease: [0.2, 0.8, 0.2, 1] }}>Make it easy to say something <span className="collection-kind">kind<svg aria-hidden="true" viewBox="0 0 110 16" preserveAspectRatio="none"><path d="M2 11.5C24 4 44 14 66 8s25 2 42-4" /></svg><Heart className="collection-heart" size={17} fill="currentColor" /></span>.</motion.h2>
+      <motion.h2 id="collection-heading" className="collection-heading" initial={{ opacity: 0, y: 18 }} animate={revealed ? { opacity: 1, y: 0 } : undefined} transition={{ duration: 0.6, delay: 0.08, ease: [0.2, 0.8, 0.2, 1] }}>Make it easy to say something <span className="collection-kind"><ProofText text="kind" /><svg aria-hidden="true" viewBox="0 0 110 16" preserveAspectRatio="none"><path d="M2 11.5C24 4 44 14 66 8s25 2 42-4" /></svg><Heart className="collection-heart" size={17} fill="currentColor" /></span>.</motion.h2>
     </div>
   );
 }
