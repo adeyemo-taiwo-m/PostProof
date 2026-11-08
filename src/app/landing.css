@@ -941,12 +941,13 @@
 .final-scene.is-motion-active .final-cta-button::before { animation: final-cta-shine 4s ease-in-out infinite; }
 @keyframes final-cta-shine { 0%, 25% { transform: translateX(-120%); } 75%, 100% { transform: translateX(120%); } }
 .final-wordmark-wrap { width: min(1200px, 100vw); margin-top: 150px; padding-bottom: 58px; }
-.final-wordmark { font-size: clamp(130px, 18vw, 320px); color: rgb(250 246 240 / .24); line-height: .68; white-space: nowrap; transform: translateY(34px); }
+.final-wordmark-wrap { width: calc(100% + 180px); margin-right: -90px; margin-left: -90px; }
+.final-wordmark { font-size: clamp(170px, 24vw, 430px); color: rgb(250 246 240 / .3); line-height: .6; white-space: nowrap; transform: translateY(48px); }
 .final-wordmark:hover { color: rgb(250 246 240 / .38); }
 .final-wordmark-quote { color: var(--final-sand); opacity: .85; }
-.final-wordmark-reflection { bottom: -66px; font-size: clamp(130px, 18vw, 320px); opacity: .045; }
+.final-wordmark-reflection { bottom: -84px; font-size: clamp(170px, 24vw, 430px); opacity: .05; }
 @media (max-width: 639px) {
-  .final-wordmark-wrap { width: 100%; margin-top: 105px; padding-bottom: 42px; }
-  .final-wordmark, .final-wordmark-reflection { font-size: 19vw; }
-  .final-wordmark { color: rgb(250 246 240 / .3); transform: translateY(24px); }
+  .final-wordmark-wrap { width: 100%; margin: 105px 0 0; padding-bottom: 42px; }
+  .final-wordmark, .final-wordmark-reflection { font-size: 23vw; }
+  .final-wordmark { color: rgb(250 246 240 / .34); transform: translateY(30px); }
 }
