@@ -8,10 +8,6 @@ type RippleState = { x: number; y: number; started: number } | null;
 
 const clamp = (value: number, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 
-function QuoteSymbol({ className, size, rotation }: { className: string; size: string; rotation: number }) {
-  return <span className={`hero-quote ${className}`} style={{ "--quote-size": size, "--quote-rotation": `${rotation}deg` } as CSSProperties} aria-hidden="true">&ldquo;</span>;
-}
-
 function BlueprintGrid({ paused, reducedMotion, pointerRef, rippleRef }: { paused: boolean; reducedMotion: boolean; pointerRef: MutableRefObject<PointerState>; rippleRef: MutableRefObject<RippleState> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -184,5 +180,5 @@ export default function HeroBackground({ paused, reducedMotion }: { paused: bool
     "--flash-opacity": "0",
   } as CSSProperties;
 
-  return <div ref={rootRef} className={`hero-background ${introReady ? "is-intro-ready" : ""} ${paused || reducedMotion ? "is-static" : ""}`} style={style} aria-hidden="true"><div className="hero-background-content"><div className="hero-grain" /><div className="hero-light" /><div className="hero-window-bars"><i /><i /><i /></div><QuoteSymbol className="hero-quote-a" size="min(42vw, 420px)" rotation={8} /><QuoteSymbol className="hero-quote-b" size="min(16vw, 160px)" rotation={-10} /><BlueprintGrid paused={paused} reducedMotion={reducedMotion} pointerRef={pointerRef} rippleRef={rippleRef} /><div className="hero-flashlight" /></div></div>;
+  return <div ref={rootRef} className={`hero-background ${introReady ? "is-intro-ready" : ""} ${paused || reducedMotion ? "is-static" : ""}`} style={style} aria-hidden="true"><div className="hero-background-content"><div className="hero-grain" /><div className="hero-light" /><div className="hero-window-bars"><i /><i /><i /></div><BlueprintGrid paused={paused} reducedMotion={reducedMotion} pointerRef={pointerRef} rippleRef={rippleRef} /><div className="hero-flashlight" /></div></div>;
 }
