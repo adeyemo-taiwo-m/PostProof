@@ -1103,6 +1103,10 @@
 .pp-nav .pp-wordmark-mark,
 .pp-mobile-sheet .pp-wordmark-mark { display: none; }
 .pp-nav .pp-wordmark { gap: 0; color: var(--ink); }
+.pp-nav .pp-wordmark-text::before,
+.pp-nav .pp-wordmark-text::after,
+.pp-mobile-sheet .pp-wordmark-text::before,
+.pp-mobile-sheet .pp-wordmark-text::after { content: '"'; color: var(--ink); }
 .pp-nav-links a,
 .pp-nav-actions > a:first-child { color: var(--muted); }
 .collection-kind svg path {
