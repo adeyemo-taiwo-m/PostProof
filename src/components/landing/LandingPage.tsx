@@ -7,13 +7,10 @@ import {
   ArrowDown,
   ArrowDownRight,
   ArrowLeftRight,
-  ArrowUp,
   ArrowUpRight,
   BadgeCheck,
   Check,
   CheckCircle2,
-  CirclePause,
-  CirclePlay,
   Clock3,
   Copy,
   Download,
@@ -33,6 +30,7 @@ import DarkVeil from "@/components/DarkVeil";
 import StudioSection from "@/components/landing/StudioSection";
 import CollectionLinkSection from "@/components/landing/CollectionLinkSection";
 import ScrollReveal from "@/components/ScrollReveal";
+import FinalCtaSection from "@/components/landing/FinalCtaSection";
 
 type Format = "4:5" | "1:1" | "9:16";
 type Template = "Minimal" | "Bold" | "Editorial";
@@ -499,7 +497,7 @@ function BigQuote() {
 }
 
 export default function LandingPage() {
-  const [paused, setPaused] = useState(false);
+  const paused = false;
   const [menuOpen, setMenuOpen] = useState(false);
   const [loopStep, setLoopStep] = useState(0);
   const [loopCycle, setLoopCycle] = useState(0);
@@ -596,8 +594,6 @@ export default function LandingPage() {
 
     <BigQuote />
 
-    <section className="pp-final pp-section" data-section="final"><div className="pp-proof-wall" aria-hidden="true">{Array.from({ length: 15 }).map((_, index) => <span key={index}>“ {samples[index % samples.length].quote.slice(0, 28)}…</span>)}</div><div className="pp-container pp-final-inner"><span className="pp-overline">YOUR TURN</span><h2>Start collecting<br /><em>testimonials today.</em></h2><Link className="pp-button pp-button-coral pp-button-large" href="/signup">Get started free <ArrowUpRight size={18} /></Link><p>Free to start · Real words only · No designer needed</p></div></section>
-
-    <footer className="pp-footer"><div className="pp-container"><div className="pp-footer-rule" /><Wordmark footer /><div className="pp-footer-bottom"><p>Real words. Good design. Better proof.</p><div><Link href="/login">Log in</Link><Link href="/signup">Create account</Link></div><button type="button" onClick={() => window.scrollTo({ top: 0, behavior: paused ? "auto" : "smooth" })} aria-label="Back to top"><ArrowUp size={16} /></button><span>© {new Date().getFullYear()} Postproof</span></div><button className="pp-footer-pause" type="button" onClick={() => setPaused(!paused)}>{paused ? <CirclePlay size={15} /> : <CirclePause size={15} />} {paused ? "Play animations" : "Pause animations"}</button></div></footer>
+    <FinalCtaSection reducedMotion={reducedMotion} />
   </main>;
 }
