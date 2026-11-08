@@ -86,7 +86,32 @@ function WordmarkHero({ entered, onBackToTop }: { entered: boolean; onBackToTop:
 }
 
 function FooterRow({ onBackToTop }: { onBackToTop: () => void }) {
-  return <div className="final-footer-row"><p><span>Real words.</span> <span>Good design.</span> <span>Better proof.</span></p><nav aria-label="Footer navigation"><Link href="/login">Log in</Link><Link className="final-create-link" href="/signup">Create account</Link></nav><div className="final-footer-meta"><button type="button" className="final-top-button" onClick={onBackToTop} aria-label="Back to top" title="Back to top"><ArrowUp size={15} /></button><span>© 2026 Postproof</span></div></div>;
+  return <div className="final-footer-row"><p><span>Real words.</span> <span>Good design.</span> <span>Better proof.</span></p><div className="final-footer-meta"><button type="button" className="final-top-button" onClick={onBackToTop} aria-label="Back to top" title="Back to top"><ArrowUp size={15} /></button><span>© 2026 Postproof</span></div></div>;
+}
+
+function FooterDirectory() {
+  return <div className="final-footer-directory">
+    <div className="final-directory-column final-directory-intro">
+      <span className="final-directory-label">Proof worth posting.</span>
+      <p>Collect customer reviews with one link. Approve the ones you love. Download them as branded, ready-to-post graphics.</p>
+    </div>
+    <nav className="final-directory-column" aria-label="Explore Postproof">
+      <span className="final-directory-label">Explore</span>
+      <Link href="#the-loop">How it works <ArrowUpRight size={13} /></Link>
+      <Link href="#why-postproof">Why Postproof <ArrowUpRight size={13} /></Link>
+      <Link href="#link-claim">Build your collection link <ArrowUpRight size={13} /></Link>
+    </nav>
+    <div className="final-directory-column final-directory-proof">
+      <span className="final-directory-label">The promise</span>
+      <span>Real words.</span>
+      <span>Good design.</span>
+      <span>Better proof.</span>
+    </div>
+    <div className="final-directory-column final-directory-action">
+      <span className="final-directory-label">The Postproof promise</span>
+      <span>Free to start · Real words only · No designer needed</span>
+    </div>
+  </div>;
 }
 
 function AmbientParticles({ paused, reducedMotion }: { paused: boolean; reducedMotion: boolean }) {
@@ -137,6 +162,7 @@ export default function FinalCtaSection({ reducedMotion }: FinalCtaSectionProps)
     <div className="final-cursor-glow" aria-hidden="true" style={{ left: `${pointer.x}%`, top: `${pointer.y}%` }} />
     <AmbientParticles paused={!motionActive} reducedMotion={reducedMotion} />
     <div className="final-scene-inner">
+      <FooterDirectory />
       <TestimonialMarquee paused={!motionActive} reducedMotion={reducedMotion} entered={entered} pointer={pointer} hoveredChip={hoveredChip} onHover={setHoveredChip} onPin={pinChip} />
       <div className="final-content-block">
         <AnimatePresence>{pinnedChip && <motion.div className="final-pinned-card" initial={{ opacity: 0, y: 24, scale: .86, rotate: -4 }} animate={{ opacity: 1, y: 0, scale: 1, rotate: -2 }} exit={{ opacity: 0, y: -18, scale: .92, rotate: 3 }} transition={{ type: "spring", stiffness: 300, damping: 22 }}><span>&ldquo; {pinnedChip}</span><b>Yours could be next</b></motion.div>}</AnimatePresence>
