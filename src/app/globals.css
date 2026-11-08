@@ -157,6 +157,9 @@ p { text-wrap: pretty; }
 .auth-visual-image { position: absolute; inset: 74px 52px 76px; overflow: hidden; border: 1px solid #fff4e438; border-radius: 18px; background: linear-gradient(145deg, #2c130f22, #f9875b1c), url('/after-hero.jpg') center / cover; box-shadow: 0 22px 45px #210e0b4d; }
 .auth-visual-image::before { position: absolute; inset: 0; background: linear-gradient(155deg, #24100c66 0%, transparent 43%, #f7b18b1f 100%); content: ""; }
 .auth-visual-image::after { position: absolute; right: -22%; bottom: -15%; width: 78%; height: 63%; border: 1px solid #fff9f052; border-radius: 50%; transform: rotate(-27deg); content: ""; }
+.auth-visual-brand { position: absolute; top: 23px; left: 50%; z-index: 4; display: inline-flex; align-items: baseline; color: #fff; font-family: var(--font-display), var(--sans); font-size: clamp(21px, 2.5vw, 30px); font-weight: 700; letter-spacing: -.045em; line-height: 1; transform: translateX(-50%); white-space: nowrap; }
+.auth-visual-brand-proof { color: var(--primary); }
+.auth-visual-brand:hover { color: #fff; }
 .auth-visual-glass { position: absolute; z-index: 1; display: block; border: 1px solid #fff8f069; border-radius: 50%; background: linear-gradient(145deg, #ffffff42, #ffffff0b 58%, #4a100d3b); box-shadow: inset -10px -16px 24px #290f0e2e, 0 18px 30px #1e0b0926; backdrop-filter: blur(5px); }
 .auth-visual-glass-one { top: 17%; right: 15%; width: 118px; height: 118px; }
 .auth-visual-glass-two { bottom: 12%; left: 11%; width: 74px; height: 74px; opacity: .72; }
@@ -186,6 +189,7 @@ p { text-wrap: pretty; }
   .auth-visual { min-height: 330px; border-radius: 0 0 24px 24px; }
   .auth-visual-top { top: 22px; left: 20px; width: calc(100% - 40px); }
   .auth-visual-image { inset: 58px 34px 42px; }
+  .auth-visual-brand { top: 18px; font-size: 23px; }
   .auth-visual-footer { right: 20px; bottom: 17px; left: 20px; width: calc(100% - 40px); }
   .auth-visual-note { right: 15px; bottom: 14px; min-width: 126px; padding: 11px 12px; }
   .auth-visual-note strong { font-size: 18px; }

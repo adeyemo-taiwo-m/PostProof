@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, type PointerEvent } from "react";
+import Link from "next/link";
 
 export default function AuthVisual() {
   const visualRef = useRef<HTMLElement | null>(null);
@@ -30,22 +31,25 @@ export default function AuthVisual() {
   }
 
   return (
-    <aside ref={visualRef} className="auth-visual" aria-hidden="true" onPointerMove={handlePointerMove} onPointerLeave={resetPointer}>
-      <div className="auth-visual-top">
+    <aside ref={visualRef} className="auth-visual" aria-label="Postproof sign-in visual" onPointerMove={handlePointerMove} onPointerLeave={resetPointer}>
+      <div className="auth-visual-top" aria-hidden="true">
         <span>POSTPROOF / STUDIO</span>
         <span>01 — 04</span>
       </div>
       <div className="auth-visual-image">
-        <span className="auth-visual-glass auth-visual-glass-one" />
-        <span className="auth-visual-glass auth-visual-glass-two" />
-        <span className="auth-visual-orbit" />
-        <span className="auth-visual-orb" />
-        <div className="auth-visual-note">
+        <Link href="/" className="auth-visual-brand" aria-label="Postproof home">
+          <span>Post</span><span className="auth-visual-brand-proof">proof</span>
+        </Link>
+        <span className="auth-visual-glass auth-visual-glass-one" aria-hidden="true" />
+        <span className="auth-visual-glass auth-visual-glass-two" aria-hidden="true" />
+        <span className="auth-visual-orbit" aria-hidden="true" />
+        <span className="auth-visual-orb" aria-hidden="true" />
+        <div className="auth-visual-note" aria-hidden="true">
           <span>THE GOOD WORDS</span>
           <strong>Stay close.</strong>
         </div>
       </div>
-      <div className="auth-visual-footer">
+      <div className="auth-visual-footer" aria-hidden="true">
         <span>Collect. Curate. Share.</span>
         <span>© 2024</span>
       </div>
