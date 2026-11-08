@@ -180,6 +180,8 @@ p { text-wrap: pretty; }
 .auth-card .stack-form { gap: 17px; }
 .auth-card .stack-form input { background: #fffefa; }
 .auth-card .stack-form input::placeholder { color: var(--ink); opacity: .36; }
+.auth-card .stack-form label:focus-within { color: var(--primary); }
+.auth-card .stack-form input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 15%, transparent); caret-color: var(--primary); }
 .auth-card .button { margin-top: 3px; }
 .auth-card .form-links, .auth-card .form-footnote { font-size: 11px; line-height: 1.5; }
 
