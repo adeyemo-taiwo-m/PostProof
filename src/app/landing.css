@@ -833,8 +833,9 @@
 
 /* Keep the QR ticket in the normal flow, centered below the link pill. */
 .collection-qr-slot { display: flex; height: 0; align-items: flex-start; justify-content: center; margin-top: 0; overflow: visible; transition: height 450ms var(--collection-ease), margin-top 450ms var(--collection-ease); }
-.collection-qr-slot.is-visible { height: 210px; margin-top: 24px; }
+.collection-qr-slot.is-visible { height: 174px; margin-top: 24px; }
 .collection-qr-ticket { position: relative; top: 0; right: auto; margin: 0 auto; }
+.collection-channels { margin-top: 28px; }
 
 @media (prefers-reduced-motion: reduce) {
   .collection-input-curved-shell { transition-duration: 150ms; }
