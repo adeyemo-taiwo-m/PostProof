@@ -854,7 +854,7 @@ export default function StudioSection() {
           <div className="studio-stage-dots" aria-hidden="true"><i /><i /><i /></div>
         </div>
         <div className={`studio-try-hint ${hintVisible ? "is-visible" : ""}`} aria-hidden={!hintVisible}><span>Try it yourself</span><ArrowDownRight size={15} /></div>
-        <ResetButton refreshing={state.refreshing} onReset={resetDemo} />
+        <div className="studio-reset-wrap"><ResetButton refreshing={state.refreshing} onReset={resetDemo} /></div>
       </div>
     </section>
   );
