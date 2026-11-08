@@ -38,7 +38,7 @@
 
 .ui-button-primary, .ui-button-default { color: var(--ink); background: var(--coral-500); box-shadow: var(--shadow-xs); }
 .ui-button-primary:hover, .ui-button-default:hover { background: var(--coral-400); }
-.ui-button-secondary { border-color: var(--coral-200); border-radius: 999px; color: var(--ink); background: var(--coral-50); box-shadow: none; }
+.ui-button-secondary { border-color: var(--coral-200); border-radius: 999px; color: var(--ink); background: var(--coral-50); box-shadow: none; text-decoration: none; }
 .ui-button-secondary:hover { border-color: color-mix(in srgb, var(--primary) 35%, var(--coral-200)); color: var(--ink); background: var(--coral-100); box-shadow: var(--shadow-xs); }
 .ui-button-outline { border-color: var(--border-strong); color: var(--ink); background: var(--surface); }
 .ui-button-outline:hover { border-color: var(--ink-3); background: var(--surface-2); }

@@ -1809,7 +1809,7 @@ export default function LandingPage() {
                   Create your link <ArrowUpRight aria-hidden="true" />
                 </Link>
               </MagneticButton>
-              <Button asChild variant="link-draw">
+              <Button asChild variant="secondary" size="md">
                 <a href="#the-loop">
                   See how it works <ArrowDown aria-hidden="true" />
                 </a>
@@ -1841,9 +1841,11 @@ export default function LandingPage() {
                 a place to land—and gives you a graceful way to put them back
                 into the world.
               </p>
-              <a className="pp-text-link" href="#link-claim">
-                Build your collection link <ArrowUpRight size={16} />
-              </a>
+              <Button asChild variant="secondary" size="md">
+                <a href="#link-claim">
+                  Build your collection link <ArrowUpRight size={16} />
+                </a>
+              </Button>
             </div>
           </div>
           <div className="pp-loop-grid">
