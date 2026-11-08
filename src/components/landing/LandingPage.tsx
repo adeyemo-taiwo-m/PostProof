@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowDownRight,
@@ -17,10 +17,7 @@ import {
   Clock3,
   Copy,
   Download,
-  Camera,
-  Mail,
   Menu,
-  MessageCircle,
   MessageSquareHeart,
   MoveUpRight,
   Quote,
@@ -34,6 +31,7 @@ import CurvedInput from "@/components/CurvedInput";
 import WarpText from "@/components/WarpText";
 import DarkVeil from "@/components/DarkVeil";
 import StudioSection from "@/components/landing/StudioSection";
+import CollectionLinkSection from "@/components/landing/CollectionLinkSection";
 
 type Format = "4:5" | "1:1" | "9:16";
 type Template = "Minimal" | "Bold" | "Editorial";
@@ -54,17 +52,6 @@ const loopSteps = [
 const LOOP_DURATION = 6000;
 const LOOP_SLUG = "moonwell";
 const LOOP_QUOTE = "The kind of care you feel the difference in.";
-
-const shareOptions = [
-  { label: "WhatsApp", icon: MessageCircle },
-  { label: "Instagram", icon: Camera },
-  { label: "Email", icon: Mail },
-  { label: "SMS", icon: MessageCircle },
-] as const;
-
-function slugify(value: string) {
-  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) || "your-business";
-}
 
 function Wordmark({ footer = false }: { footer?: boolean }) {
   return <Link className={`pp-wordmark ${footer ? "pp-wordmark-footer" : ""}`} href="/" aria-label="Postproof home"><span className="pp-wordmark-mark">“</span><span>Post<span className="pp-wordmark-proof">proof</span></span></Link>;
@@ -514,13 +501,9 @@ export default function LandingPage() {
   const [loopActivity, setLoopActivity] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [business, setBusiness] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [shareChoice, setShareChoice] = useState("");
   const [progress, setProgress] = useState(0);
   const [cursor, setCursor] = useState({ x: -100, y: -100, label: "" });
   const pageRef = useRef<HTMLElement>(null);
-  const slug = useMemo(() => slugify(business), [business]);
 
   const loopPaused = paused || loopActivity || !pageVisible;
 
@@ -590,7 +573,6 @@ export default function LandingPage() {
     window.addEventListener("pointermove", move); return () => window.removeEventListener("pointermove", move);
   }, []);
 
-  async function copyLink() { const link = `https://postproof.app/t/${slug}`; try { await navigator.clipboard.writeText(link); } catch { const area = document.createElement("textarea"); area.value = link; document.body.appendChild(area); area.select(); document.execCommand("copy"); area.remove(); } setCopied(true); document.title = "Copied, now go collect some proof."; window.setTimeout(() => { setCopied(false); document.title = "Postproof — Proof worth posting."; }, 2000); }
   return <main ref={pageRef} className={`pp-page ${paused ? "pp-paused" : ""}`}>
     <div className="pp-scroll-progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
     <div className="pp-cursor" style={{ transform: `translate3d(${cursor.x}px, ${cursor.y}px, 0)` }} aria-hidden="true"><span>{cursor.label || "“"}</span></div>
@@ -605,7 +587,7 @@ export default function LandingPage() {
 
     <StudioSection />
 
-    <section className="pp-link-claim pp-section" id="link-claim" data-section="link"><div className="pp-container pp-link-claim-inner"><span className="pp-overline">YOUR COLLECTION LINK</span><h2>Make it easy to say something kind.</h2><label className="pp-business-input"><span>What&apos;s your business called?</span><input value={business} onChange={(event) => setBusiness(event.target.value)} placeholder="Bright Smiles Studio" /></label><div className="pp-url-pill" data-cursor="Copy"><span>postproof.app/t/</span><b>{slug}</b><button type="button" onClick={copyLink} aria-label="Copy your Postproof collection link">{copied ? <><Check size={18} /> Copied</> : <><Copy size={18} /> Copy</>}</button></div><p className="pp-copy-announcement" aria-live="polite">{copied ? "Link copied. Your testimonial link is ready to share." : ""}</p><div className="pp-share-row"><span>Share it where people already talk to you</span>{shareOptions.map(({ label, icon: Icon }) => <button key={label} type="button" className={shareChoice === label ? "active" : ""} onClick={() => setShareChoice(label)}><Icon size={16} />{label}</button>)}</div>{shareChoice && <p className="pp-share-note" role="status">You&apos;ll do this from your dashboard.</p>}</div></section>
+    <CollectionLinkSection />
 
     <BigQuote />
 
