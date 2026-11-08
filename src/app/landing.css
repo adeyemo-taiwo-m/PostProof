@@ -819,3 +819,25 @@
 @media (prefers-reduced-motion: reduce) {
   .collection-glow, .collection-eyebrow i, .collection-heart, .collection-kind svg path, .collection-slug-text.is-empty::after, .collection-availability.is-checking i, .collection-channel-chip:hover .collection-channel-icon svg, .collection-demo-hint span, .collection-ghost-cursor > span, .collection-confetti i { animation: none !important; }.collection-link-pill, .collection-input-shell, .collection-channel-chip, .collection-message-actions button, .collection-message-actions a, .collection-demo-hint, .collection-slug-pencil { transition-duration: 150ms !important; }.collection-ghost-cursor { display: none; }
 }
+
+/* Reuse the hero's curved input treatment for the collection name field. */
+.collection-input-curved-shell { position: relative; width: 100%; transition: transform var(--collection-hover-duration) var(--collection-ease), filter var(--collection-hover-duration) ease; }
+.collection-input-curved-shell:hover { transform: translateY(-1px); }
+.collection-input-curved-shell.is-empty-flash { animation: collection-shake 240ms ease; }
+.collection-input-curved-shell .curved-input__svg { cursor: text; }
+.collection-input-curved-shell .curved-input__ring { transition: opacity var(--collection-hover-duration) ease; }
+.collection-input-curved-shell.is-focused .curved-input__ring { opacity: .28; }
+.collection-name-input { width: 100% !important; }
+.collection-name-input .curved-input__field { caret-color: var(--collection-coral); }
+.collection-input-curved-shell .collection-input-valid { right: 14px; }
+
+/* Keep the QR ticket in the normal flow, centered below the link pill. */
+.collection-qr-slot { display: flex; height: 0; align-items: flex-start; justify-content: center; margin-top: 0; overflow: visible; transition: height 450ms var(--collection-ease), margin-top 450ms var(--collection-ease); }
+.collection-qr-slot.is-visible { height: 174px; margin-top: 24px; }
+.collection-qr-ticket { position: relative; top: 0; right: auto; margin: 0 auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .collection-input-curved-shell { transition-duration: 150ms; }
+  .collection-input-curved-shell.is-empty-flash { animation: none; }
+  .collection-qr-slot { transition-duration: 150ms; }
+}

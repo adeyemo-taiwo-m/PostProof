@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import type { CSSProperties, PointerEvent } from "react";
+import CurvedInput from "@/components/CurvedInput";
 
 type Channel = "WhatsApp" | "Instagram" | "Email" | "SMS";
 type Availability = "idle" | "checking" | "available" | "taken";
@@ -134,7 +135,6 @@ function SectionHeader({ revealed }: { revealed: boolean }) {
 }
 
 function NameInput({ value, onChange, onEnter, reducedMotion, realInteraction }: { value: string; onChange: (value: string) => void; onEnter: () => void; reducedMotion: boolean; realInteraction: () => void }) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [focused, setFocused] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [shake, setShake] = useState(false);
@@ -152,7 +152,7 @@ function NameInput({ value, onChange, onEnter, reducedMotion, realInteraction }:
       setEmptyFlash(true);
       window.setTimeout(() => setShake(false), LINK_TIMING.shake);
       window.setTimeout(() => setEmptyFlash(false), LINK_TIMING.shake + 120);
-      inputRef.current?.focus();
+      document.getElementById("collection-business")?.focus();
       return;
     }
     onEnter();
@@ -161,9 +161,8 @@ function NameInput({ value, onChange, onEnter, reducedMotion, realInteraction }:
   return (
     <div className={`collection-input-wrap ${shake ? "is-shaking" : ""}`}>
       <label htmlFor="collection-business" className={focused || value ? "is-floating" : ""}>What&apos;s your business called?</label>
-      <div className={`collection-input-shell ${focused ? "is-focused" : ""} ${emptyFlash ? "is-empty-flash" : ""}`}>
-        <input ref={inputRef} id="collection-business" value={value} maxLength={40} onFocus={() => { realInteraction(); setFocused(true); }} onBlur={() => setFocused(false)} onChange={(event) => { realInteraction(); onChange(event.target.value); }} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); submit(); } }} aria-describedby="collection-business-counter" />
-        {!value && !focused && <AnimatePresence mode="wait" initial={false}><motion.span key={PLACEHOLDERS[placeholderIndex]} className="collection-placeholder" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.28 }}>{PLACEHOLDERS[placeholderIndex]}</motion.span></AnimatePresence>}
+      <div className={`collection-input-curved-shell ${focused ? "is-focused" : ""} ${emptyFlash ? "is-empty-flash" : ""}`}>
+        <CurvedInput id="collection-business" className="collection-name-input" value={value} maxLength={40} onChange={(nextValue) => { realInteraction(); onChange(nextValue); }} onSubmit={submit} onFocus={() => { realInteraction(); setFocused(true); }} onBlur={() => setFocused(false)} placeholder={PLACEHOLDERS[placeholderIndex]} ariaLabel="What&apos;s your business called?" type="text" width="100%" bend={8} height={64} cornerRadius={28} fontSize={14} backgroundColor="#FAF7F2" textColor="#1A1613" placeholderColor="#8C847A" borderColor="rgba(26,22,19,.35)" buttonColor="#F0522D" iconColor="#F0522D" shadowSize="none" showIcon={false} showButton={false} />
         {value && <span className="collection-input-valid" aria-hidden="true">{value.trim().length > 1 ? <Check size={16} /> : <Sparkles size={15} />}</span>}
       </div>
       <span id="collection-business-counter" className={`collection-counter ${value.length >= 30 ? "is-visible" : ""}`}>{value.length}/40</span>

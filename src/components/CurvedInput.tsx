@@ -155,6 +155,7 @@ type Theme = keyof typeof THEMES;
 type ShadowSize = keyof typeof SHADOWS | "none";
 
 export type CurvedInputProps = {
+  id?: string;
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
@@ -192,6 +193,7 @@ export type CurvedInputProps = {
 };
 
 const CurvedInput = ({
+  id,
   value,
   defaultValue = "",
   onChange,
@@ -555,6 +557,7 @@ const CurvedInput = ({
       {content}
       <input
         ref={inputRef}
+        id={id}
         className="curved-input__field"
         type={safeType}
         inputMode={inputMode}
