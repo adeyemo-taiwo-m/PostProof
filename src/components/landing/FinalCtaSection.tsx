@@ -86,7 +86,7 @@ function WordmarkHero({ entered, onBackToTop }: { entered: boolean; onBackToTop:
 }
 
 function FooterRow({ onBackToTop }: { onBackToTop: () => void }) {
-  return <div className="final-footer-row"><p><span>Real words.</span> <span>Good design.</span> <span>Better proof.</span></p><div className="final-footer-meta"><button type="button" className="final-top-button" onClick={onBackToTop} aria-label="Back to top" title="Back to top"><ArrowUp size={15} /></button><span>© 2026 Postproof</span></div></div>;
+  return <div className="final-footer-row"><p><span>Real words.</span> <span>Good design.</span> <span>Better proof.</span></p><nav aria-label="Footer navigation"><Link href="#the-loop">How it works</Link><Link href="#why-postproof">Why Postproof</Link></nav><div className="final-footer-meta"><button type="button" className="final-top-button" onClick={onBackToTop} aria-label="Back to top" title="Back to top"><ArrowUp size={15} /></button><span>© 2026 Postproof</span></div></div>;
 }
 
 function FooterDirectory() {
