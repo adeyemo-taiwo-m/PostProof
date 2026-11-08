@@ -178,7 +178,7 @@ p { text-wrap: pretty; }
 .auth-card h1 { max-width: 430px; margin: 16px 0 14px; font-size: clamp(32px, 4vw, 44px); line-height: 1.04; }
 .auth-copy { max-width: 390px; margin-bottom: 35px; font-size: 14px; line-height: 1.65; }
 .auth-card .stack-form { gap: 17px; }
-.auth-card .stack-form input { background: #fffefa; }
+.auth-card .stack-form input { border-color: color-mix(in srgb, var(--ink) 75%, transparent); background: #fffefa; }
 .auth-card .stack-form input::placeholder { color: var(--ink); opacity: .36; }
 .auth-card .stack-form label:focus-within { color: var(--primary); }
 .auth-card .stack-form input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 15%, transparent); caret-color: var(--primary); }
